@@ -1,71 +1,77 @@
 package main
 
 import (
+	"context"
 	"fmt"
-	"time"
+	"net/http"
+	"os"
 
-	"github.com/griggsjared/getsit/internal/entity"
+	"github.com/joho/godotenv"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+
 	"github.com/griggsjared/getsit/internal/repository"
 )
 
 func main() {
-	seedUrlEntries(10_000_000)
+
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println("Error loading .env file")
+		os.Exit(1)
+	}
+
+	ctx := context.Background()
+
+	dbUri := os.Getenv("MONGODB_URI")
+	if dbUri == "" {
+		fmt.Println("MONGODB_URI is not set")
+		os.Exit(1)
+	}
+
+	client, err := setupMongoDB(ctx, dbUri)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	defer func() {
+		if err = client.Disconnect(ctx); err != nil {
+			fmt.Println(err)
+		}
+	}()
+
+	r := repository.NewMongoDBUrlEntryStore(client)
+
+	router := &appRouter{
+		repo: r,
+	}
+
+	mux := http.NewServeMux()
+
+	router.setup(mux)
+
+	server := &http.Server{
+		Addr:    ":8080",
+		Handler: mux,
+	}
+
+	server.ListenAndServe()
 }
 
-// seed will generate a number of tokens and check for duplicates
-func seedUrlEntries(tCount int) {
+// setupMongoDB will setup the connection to the MongoDB database
+func setupMongoDB(ctx context.Context, uri string) (*mongo.Client, error) {
 
-	genCount := 0
-	dupCount := 0
+	opts := options.Client().ApplyURI(uri)
 
-	store := repository.NewInMemoryUrlEntryStore()
-
-	timeStart := time.Now()
-
-	fmt.Println("Seeding", tCount, "url entries with random tokens")
-
-	fChan := make(chan bool)
-
-	go func() {
-		for {
-			var percent float64
-			var finished bool
-			select {
-			case finished = <-fChan:
-				if finished {
-					percent = 100.0
-				}
-			default:
-				percent = (float64(genCount) + float64(dupCount)) / float64(tCount) * 100
-			}
-			fmt.Printf("\rEntries Seeded: %d, Duplicates (Already Existed): %d, Percent %.2f%%", genCount, dupCount, percent)
-			time.Sleep(10 * time.Millisecond)
-			if finished {
-				fmt.Println("\nTime taken: ", time.Since(timeStart))
-				close(fChan)
-				break
-			}
-		}
-	}()
-
-	fChan <- false
-	defer func() {
-		fChan <- true
-	}()
-
-	for i := 0; i < tCount; i++ {
-		url := entity.Url("https://example.com/" + string(entity.NewUrlToken()))
-		_, new, err := store.Save(url)
-
-		if err != nil {
-			fmt.Println(err)
-			break
-		}
-
-		if !new {
-			dupCount++
-		} else {
-			genCount++
-		}
+	client, err := mongo.Connect(ctx, opts)
+	if err != nil {
+		return nil, err
 	}
+
+	err = client.Ping(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return client, nil
 }

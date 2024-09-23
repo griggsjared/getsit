@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/griggsjared/getsit/internal/entity"
@@ -27,7 +28,7 @@ func NewInMemoryUrlEntryStore() *InMemoryUrlEntryStore {
 }
 
 // Save will save the url entry to the store
-func (s *InMemoryUrlEntryStore) Save(url entity.Url) (urlEntry *entity.UrlEntry, new bool, err error) {
+func (s *InMemoryUrlEntryStore) Save(ctx context.Context, url entity.Url) (urlEntry *entity.UrlEntry, new bool, err error) {
 
 	var entry *entity.UrlEntry
 
@@ -61,7 +62,7 @@ func (s *InMemoryUrlEntryStore) Save(url entity.Url) (urlEntry *entity.UrlEntry,
 }
 
 // SaveVisit will increment the number of times the url has been visited
-func (s *InMemoryUrlEntryStore) SaveVisit(token string) error {
+func (s *InMemoryUrlEntryStore) SaveVisit(ctx context.Context, token string) error {
 	if e, ok := s.entriesToken[entity.UrlToken(token)]; ok {
 		e.VisitCount++
 		return nil
@@ -70,7 +71,7 @@ func (s *InMemoryUrlEntryStore) SaveVisit(token string) error {
 }
 
 // GetFromToken will return the url entry for the given token
-func (s *InMemoryUrlEntryStore) GetFromToken(token string) (*entity.UrlEntry, error) {
+func (s *InMemoryUrlEntryStore) GetFromToken(ctx context.Context, token string) (*entity.UrlEntry, error) {
 	if e, ok := s.entriesToken[entity.UrlToken(token)]; ok {
 		return e, nil
 	}
@@ -78,7 +79,7 @@ func (s *InMemoryUrlEntryStore) GetFromToken(token string) (*entity.UrlEntry, er
 }
 
 // GetFromUrl will return the url entry for the given url
-func (s *InMemoryUrlEntryStore) GetFromUrl(url string) (*entity.UrlEntry, error) {
+func (s *InMemoryUrlEntryStore) GetFromUrl(ctx context.Context, url string) (*entity.UrlEntry, error) {
 	if e, ok := s.entriesUrl[entity.Url(url)]; ok {
 		return e, nil
 	}

@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	tokenBytes        = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+	tokenBytes        = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890_"
 	tokenLength uint8 = 8
 )
 
@@ -16,13 +16,19 @@ const (
 // This token is 8 characters long and can be and upper or lower case letter or a number
 type UrlToken string
 
+// Validate will check if the token is valid
 func (t UrlToken) Validate() error {
 	//use regex to check if the token is valid
 	mustCompile := regexp.MustCompile(`^[a-zA-Z0-9]{8}$`)
-	if !mustCompile.MatchString(string(t)) {
+	if !mustCompile.MatchString(t.String()) {
 		return fmt.Errorf("token is not valid")
 	}
 	return nil
+}
+
+// String will return the string representation of the token
+func (t UrlToken) String() string {
+	return string(t)
 }
 
 // NewUrlToken will generate a new url token that is 8 characters long.
@@ -52,6 +58,11 @@ func (u Url) Validate() error {
 	}
 
 	return nil
+}
+
+// String will return the string representation of the url
+func (u Url) String() string {
+	return string(u)
 }
 
 // UrlEntry is the domain entity that will store the long url, token, and the number of times the url has been visited
