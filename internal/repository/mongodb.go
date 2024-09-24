@@ -17,22 +17,26 @@ const (
 	urlEntryCollection = "url_entries"
 )
 
+// MongoDBUrlEntryStore is a mongodb store that will store the url entries
 type MongoDBUrlEntryStore struct {
 	client *mongo.Client
 }
 
+// NewMongoDBUrlEntryStore will create a new mongodb store from the the mongodb client
 func NewMongoDBUrlEntryStore(c *mongo.Client) *MongoDBUrlEntryStore {
 	return &MongoDBUrlEntryStore{
 		client: c,
 	}
 }
 
-type urlEntrySchema struct {
+// mongoDBUrlEntrySchema is the schema for the url entry in the mongodb store
+type mongoDBUrlEntrySchema struct {
 	Token      entity.UrlToken `bson:"_id"`
 	Url        entity.Url      `bson:"url"`
 	VisitCount int             `bson:"visit_count"`
 }
 
+// Save will save the url entry to the store
 func (s *MongoDBUrlEntryStore) Save(ctx context.Context, url entity.Url) (urlEntry *entity.UrlEntry, new bool, err error) {
 
 	coll, err := s.newUrlEntryCollection()
@@ -45,7 +49,7 @@ func (s *MongoDBUrlEntryStore) Save(ctx context.Context, url entity.Url) (urlEnt
 		return entry, false, nil
 	}
 
-	newEntry := urlEntrySchema{
+	newEntry := mongoDBUrlEntrySchema{
 		Token:      entity.NewUrlToken(),
 		Url:        url,
 		VisitCount: 0,
@@ -63,6 +67,7 @@ func (s *MongoDBUrlEntryStore) Save(ctx context.Context, url entity.Url) (urlEnt
 	}, true, nil
 }
 
+// SaveVisit will increment the number of times the url has been visited
 func (s *MongoDBUrlEntryStore) SaveVisit(ctx context.Context, token string) error {
 
 	coll, err := s.newUrlEntryCollection()
@@ -78,6 +83,7 @@ func (s *MongoDBUrlEntryStore) SaveVisit(ctx context.Context, token string) erro
 	return nil
 }
 
+// GetFromToken will get the url entry from the token
 func (s *MongoDBUrlEntryStore) GetFromToken(ctx context.Context, token string) (*entity.UrlEntry, error) {
 
 	coll, err := s.newUrlEntryCollection()
@@ -85,7 +91,7 @@ func (s *MongoDBUrlEntryStore) GetFromToken(ctx context.Context, token string) (
 		return nil, err
 	}
 
-	var entry urlEntrySchema
+	var entry mongoDBUrlEntrySchema
 	err = coll.FindOne(ctx, bson.M{"_id": token}).Decode(&entry)
 	if err != nil {
 		return nil, err
@@ -98,6 +104,7 @@ func (s *MongoDBUrlEntryStore) GetFromToken(ctx context.Context, token string) (
 	}, nil
 }
 
+// GetFromUrl will get the url entry from the url
 func (s *MongoDBUrlEntryStore) GetFromUrl(ctx context.Context, url string) (*entity.UrlEntry, error) {
 
 	coll, err := s.newUrlEntryCollection()
@@ -105,7 +112,7 @@ func (s *MongoDBUrlEntryStore) GetFromUrl(ctx context.Context, url string) (*ent
 		return nil, err
 	}
 
-	var schema urlEntrySchema
+	var schema mongoDBUrlEntrySchema
 	err = coll.FindOne(ctx, bson.M{"url": url}).Decode(&schema)
 	if err != nil {
 		return nil, err
@@ -118,6 +125,8 @@ func (s *MongoDBUrlEntryStore) GetFromUrl(ctx context.Context, url string) (*ent
 	}, nil
 }
 
+// newUrlEntryCollection will create a new collection for the url entries if it does not exist yet
+// it will also create an index for the url field
 func (s *MongoDBUrlEntryStore) newUrlEntryCollection() (*mongo.Collection, error) {
 
 	coll := s.client.Database(urlEntryDatabase).Collection(urlEntryCollection)

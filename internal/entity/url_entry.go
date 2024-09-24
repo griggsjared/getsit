@@ -72,11 +72,11 @@ type UrlEntry struct {
 	VisitCount int      // The number of times the url has been visited
 }
 
-// NewUrlEntry will create a new url entry
-func NewUrlEntry(url Url, token UrlToken, visitCount int) *UrlEntry {
+// NewUrlEntry will create a new url entry from primitive types
+func NewUrlEntry(url string, token string, visitCount int) *UrlEntry {
 	return &UrlEntry{
-		Url:        url,
-		Token:      token,
+		Url:        Url(url),
+		Token:      UrlToken(token),
 		VisitCount: visitCount,
 	}
 }

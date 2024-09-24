@@ -7,28 +7,28 @@ import (
 	"github.com/griggsjared/getsit/internal/entity"
 )
 
-// entriesTokenMap is a map that will store the url entry with the token as the key
-type entriesTokenMap map[entity.UrlToken]*entity.UrlEntry
+// memEntriesTokenMap is a map that will store the url entry with the token as the key
+type memEntriesTokenMap map[entity.UrlToken]*entity.UrlEntry
 
-// entriesUrlMap is a map that will store the url entry with the url as the key
-type entriesUrlMap map[entity.Url]*entity.UrlEntry
+// memEntriesUrlMap is a map that will store the url entry with the url as the key
+type memEntriesUrlMap map[entity.Url]*entity.UrlEntry
 
-// InMemoryUrlEntryStore is a in memory store that will store the url entries
-type InMemoryUrlEntryStore struct {
-	entriesToken entriesTokenMap //key is the token and value is the url entry for a fast lookup ( O(1) )
-	entriesUrl   entriesUrlMap   //key is the url and value is the url entry for a fast lookup ( O(1) )
+// MemUrlEntryStore is a in memory store that will store the url entries
+type MemUrlEntryStore struct {
+	entriesToken memEntriesTokenMap //key is the token and value is the url entry for a fast lookup ( O(1) )
+	entriesUrl   memEntriesUrlMap   //key is the url and value is the url entry for a fast lookup ( O(1) )
 }
 
-// NewInMemoryUrlEntryStore will create a new in memory store
-func NewInMemoryUrlEntryStore() *InMemoryUrlEntryStore {
-	return &InMemoryUrlEntryStore{
-		entriesToken: make(entriesTokenMap),
-		entriesUrl:   make(entriesUrlMap),
+// NewMemUrlEntryStore will create a new in memory store
+func NewMemUrlEntryStore() *MemUrlEntryStore {
+	return &MemUrlEntryStore{
+		entriesToken: make(memEntriesTokenMap),
+		entriesUrl:   make(memEntriesUrlMap),
 	}
 }
 
 // Save will save the url entry to the store
-func (s *InMemoryUrlEntryStore) Save(ctx context.Context, url entity.Url) (urlEntry *entity.UrlEntry, new bool, err error) {
+func (s *MemUrlEntryStore) Save(ctx context.Context, url entity.Url) (urlEntry *entity.UrlEntry, new bool, err error) {
 
 	var entry *entity.UrlEntry
 
@@ -62,7 +62,7 @@ func (s *InMemoryUrlEntryStore) Save(ctx context.Context, url entity.Url) (urlEn
 }
 
 // SaveVisit will increment the number of times the url has been visited
-func (s *InMemoryUrlEntryStore) SaveVisit(ctx context.Context, token string) error {
+func (s *MemUrlEntryStore) SaveVisit(ctx context.Context, token string) error {
 	if e, ok := s.entriesToken[entity.UrlToken(token)]; ok {
 		e.VisitCount++
 		return nil
@@ -71,7 +71,7 @@ func (s *InMemoryUrlEntryStore) SaveVisit(ctx context.Context, token string) err
 }
 
 // GetFromToken will return the url entry for the given token
-func (s *InMemoryUrlEntryStore) GetFromToken(ctx context.Context, token string) (*entity.UrlEntry, error) {
+func (s *MemUrlEntryStore) GetFromToken(ctx context.Context, token string) (*entity.UrlEntry, error) {
 	if e, ok := s.entriesToken[entity.UrlToken(token)]; ok {
 		return e, nil
 	}
@@ -79,7 +79,7 @@ func (s *InMemoryUrlEntryStore) GetFromToken(ctx context.Context, token string) 
 }
 
 // GetFromUrl will return the url entry for the given url
-func (s *InMemoryUrlEntryStore) GetFromUrl(ctx context.Context, url string) (*entity.UrlEntry, error) {
+func (s *MemUrlEntryStore) GetFromUrl(ctx context.Context, url string) (*entity.UrlEntry, error) {
 	if e, ok := s.entriesUrl[entity.Url(url)]; ok {
 		return e, nil
 	}

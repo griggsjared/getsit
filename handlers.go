@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/griggsjared/getsit/internal/entity"
+	"github.com/griggsjared/getsit/template"
 )
 
 type UrlEntryRepository interface {
@@ -37,10 +38,16 @@ func (ar *appRouter) setup(mux *http.ServeMux) {
 // handleHomepage will show the homepage of the application
 // for now, this shows instructions on how to use the application
 func (ar *appRouter) handleHomepage(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Welcome to Getsit")
-	fmt.Fprintln(w, "To create a new short url, send a POST request to /create with the url parameter")
-	fmt.Fprintln(w, "To get information about a short url, send a GET request to /i/{token}")
-	fmt.Fprintln(w, "To redirect to a short url, send a GET request to /{token}")
+
+	err := template.Homepage().Render(r.Context(), w)
+	if err != nil {
+		http.Error(w, "Failed to render dashboard", http.StatusInternalServerError)
+		return
+	}
+	// fmt.Fprintln(w, "Welcome to Getsit")
+	// fmt.Fprintln(w, "To create a new short url, send a POST request to /create with the url parameter")
+	// fmt.Fprintln(w, "To get information about a short url, send a GET request to /i/{token}")
+	// fmt.Fprintln(w, "To redirect to a short url, send a GET request to /{token}")
 }
 
 // handleCreate will create a new short url from the long url
@@ -112,9 +119,15 @@ func (ar *appRouter) handleInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Fprintf(w, "Url: %s\n", entry.Url)
-	fmt.Fprintf(w, "Token: %s\n", entry.Token)
-	fmt.Fprintf(w, "Visit Count: %d\n", entry.VisitCount)
+	// fmt.Fprintf(w, "Url: %s\n", entry.Url)
+	// fmt.Fprintf(w, "Token: %s\n", entry.Token)
+	// fmt.Fprintf(w, "Visit Count: %d\n", entry.VisitCount)
+
+	err = template.Info(entry.Url.String(), entry.Token.String(), entry.VisitCount).Render(r.Context(), w)
+	if err != nil {
+		http.Error(w, "Failed to render dashboard", http.StatusInternalServerError)
+		return
+	}
 }
 
 // handleNotFound will show a 404 error message
