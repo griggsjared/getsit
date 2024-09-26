@@ -50,8 +50,18 @@ func main() {
 
 	router.setup(mux)
 
+	mux.Handle("/assets/",
+		http.StripPrefix("/assets/",
+			http.FileServer(
+				http.Dir("web/public"))))
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
 	server := &http.Server{
-		Addr:    ":8080",
+		Addr:    ":" + port,
 		Handler: mux,
 	}
 

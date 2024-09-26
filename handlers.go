@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/griggsjared/getsit/internal/entity"
-	"github.com/griggsjared/getsit/template"
+	"github.com/griggsjared/getsit/web/template"
 )
 
 type UrlEntryRepository interface {

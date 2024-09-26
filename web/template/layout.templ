@@ -12,11 +12,11 @@ templ layout() {
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
       <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i" />
-      <link rel="stylesheet" href={"/main.css"} />
+      <link rel="stylesheet" href={"/assets/main.css"} />
       <title>it.getsit</title>
     </head>
     <body>
-      <div class="h-full p-4 antialiased sm:p-10 text-gray-dark bg-blue-dark">
+      <div class="h-full p-4 antialiased sm:p-10 text-gray bg-white">
         { children... }
       </div>
     </body>
@@ -26,13 +26,21 @@ templ layout() {
 templ Homepage() {
     @layout() {
         <div class="max-w-2xl mx-auto">
-            <h1 class="text-3xl font-bold text-center text-white">it.getsit</h1>
+            <h1 class="text-3xl font-bold text-center text-gray-lighter bg-gray">it.getsit</h1>
             <p class="text-center text-white">Shorten your URLs</p>
             <div class="mt-4">
                 <form action="/create" method="post">
                     <input type="url" name="url" class="w-full p-2 mb-2 text-center bg-blue-light border border-blue-dark rounded" placeholder="Enter URL" required />
                     <button type="submit" class="w-full p-2 text-center bg-blue-dark text-white border border-blue-dark rounded">Shorten</button>
                 </form>
+
+                <div>Welcome to it.getsit</div>
+                <div>Shorten your URLs</div>
+                <div>Usage:</div>
+                <div>1. To create a new short url, send a POST request to /create with the url parameter</div>
+                <div>2. To get information about a short url, send a GET request to /i/{"{token}"}</div>
+                <div>3. To redirect to a short url, send a GET request to /{"{token}"}</div>
+                <div>4. Repeat at step 1 to create more short urls .</div>
             </div>
         </div>
     }
@@ -43,12 +51,12 @@ templ Info(url string, token string, visitCount int) {
         <div class="max-w-2xl mx-auto">
             <h1 class="text-3xl font-bold text-center text-white">it.getsit</h1>
             <p class="text-center text-white">Shorten your URLs</p>
-
             <div>
-                <div>{url}</div>
-                <div>{token}</div>
-                <div>{strconv.Itoa(visitCount)}</div>
+                <div>Token: {token}</div>
+                <div>Url: {url}</div>
+                <div>Visit Count: {strconv.Itoa(visitCount)}</div>
             </div>
+            <a href="/">Shorten another URL</a>
         </div>
     }
 }
@@ -64,7 +72,7 @@ templ Message(message string) {
 templ Errors(errors map[string]string) {
     <div id="errors">
         if len(errors) > 0 {
-            <ul class="p-2 mb-2 text-center bg-red-100 border border-red-200 rounded">
+            <ul class="p-2 mb-2 text-center border rounded">
                 for _ , value := range errors {
                     <li>{value}</li>
                 }
