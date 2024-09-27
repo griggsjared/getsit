@@ -60,8 +60,15 @@ func main() {
 		port = "8080"
 	}
 
+	host := os.Getenv("HOST")
+
+	serveAddr := ":" + port
+	if host != "" {
+		serveAddr = host + serveAddr
+	}
+
 	server := &http.Server{
-		Addr:    ":" + port,
+		Addr:    serveAddr,
 		Handler: mux,
 	}
 
