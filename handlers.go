@@ -38,16 +38,11 @@ func (ar *appRouter) setup(mux *http.ServeMux) {
 // handleHomepage will show the homepage of the application
 // for now, this shows instructions on how to use the application
 func (ar *appRouter) handleHomepage(w http.ResponseWriter, r *http.Request) {
-
 	err := template.Homepage().Render(r.Context(), w)
 	if err != nil {
 		http.Error(w, "Failed to render dashboard", http.StatusInternalServerError)
 		return
 	}
-	// fmt.Fprintln(w, "Welcome to Getsit")
-	// fmt.Fprintln(w, "To create a new short url, send a POST request to /create with the url parameter")
-	// fmt.Fprintln(w, "To get information about a short url, send a GET request to /i/{token}")
-	// fmt.Fprintln(w, "To redirect to a short url, send a GET request to /{token}")
 }
 
 // handleCreate will create a new short url from the long url
@@ -119,11 +114,13 @@ func (ar *appRouter) handleInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// fmt.Fprintf(w, "Url: %s\n", entry.Url)
-	// fmt.Fprintf(w, "Token: %s\n", entry.Token)
-	// fmt.Fprintf(w, "Visit Count: %d\n", entry.VisitCount)
+	vm := template.InfoViewModel{
+		Url:        entry.Url.String(),
+		Token:      entry.Token.String(),
+		VisitCount: entry.VisitCount,
+	}
 
-	err = template.Info(entry.Url.String(), entry.Token.String(), entry.VisitCount).Render(r.Context(), w)
+	err = template.Info(vm).Render(r.Context(), w)
 	if err != nil {
 		http.Error(w, "Failed to render dashboard", http.StatusInternalServerError)
 		return
@@ -134,5 +131,10 @@ func (ar *appRouter) handleInfo(w http.ResponseWriter, r *http.Request) {
 // this is the default handler for when a route is not found and
 // can be used to show return a 404 status from within other handlers
 func (ar *appRouter) handleNotFound(w http.ResponseWriter, r *http.Request) {
-	http.Error(w, "404: Sorry not found", http.StatusNotFound)
+	w.WriteHeader(http.StatusNotFound)
+	err := template.NotFound().Render(r.Context(), w)
+	if err != nil {
+		http.Error(w, "Failed to render dashboard", http.StatusInternalServerError)
+		return
+	}
 }

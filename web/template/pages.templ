@@ -1,0 +1,66 @@
+package template
+
+import "strconv"
+
+templ Homepage() {
+	@layout("") {
+		<div class="max-w-2xl mx-auto space-y-12">
+			@header(headerConfig{logoSize: logoSizeLarge})
+			<div>
+				<form action="/create" method="post">
+					<div class="flex justify-start items-center gap-2" novalidate>
+						<input type="url" name="url" class="w-full p-2 bg-gray-lightest border border-green-dark rounded" placeholder="Enter URL"/>
+						@button(buttonConfig{text: "Get It", buttonType: "submit", className: "flex-shrink-0"})
+					</div>
+				</form>
+				<div class="space-y-2">
+					<div class="text-xl font-bold flex justify-start items-center gap-1 inline-flex">
+						Welcome to
+						@logo(logoConfig{size: logoSizeSmall})
+					</div>
+					<div class="font-medium">Usage:</div>
+					<ol class="list-none">
+						<li>To create a new short url, send a POST request to /create with the url parameter</li>
+						<li>To get information about a short url, send a GET request to /i/{ "{token}" }</li>
+						<li>To redirect to a short url, send a GET request to /{ "{token}" }</li>
+						<li>Repeat at step 1 to create more short urls.</li>
+					</ol>
+				</div>
+			</div>
+		</div>
+	}
+}
+
+type InfoViewModel struct {
+	Url        string
+	Token      string
+	VisitCount int
+}
+
+templ Info(vm InfoViewModel) {
+	@layout(vm.Token) {
+		<div class="max-w-2xl mx-auto space-y-6">
+			@header(headerConfig{logoSize: logoSizeNormal})
+			<div>
+				<div>Token: { vm.Token }</div>
+				<div>Url: { vm.Url }</div>
+				<div>Visit Count: { strconv.Itoa(vm.VisitCount) }</div>
+			</div>
+			<div>
+				@button(buttonConfig{text: "Shorten another URL", className: "w-full", href: "/"})
+			</div>
+		</div>
+	}
+}
+
+templ NotFound() {
+	@layout("404: Not Found") {
+		<div class="max-w-2xl mx-auto space-y-6">
+			@header(headerConfig{logoSize: logoSizeLarge})
+			<div>
+				<div class="text-2xl font-bold">404: Not Found</div>
+				<div class="text-xl">Sorry we could not find what you were looking for.</div>
+			</div>
+		</div>
+	}
+}

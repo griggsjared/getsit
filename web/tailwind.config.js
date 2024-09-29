@@ -11,19 +11,18 @@ module.exports = {
       black: '#000',
       white: '#fff',
       green: {
+        DEFAULT: '#7e9142',
         light: '#b0cf78',
         dark: '#7e9142',
       },
       gray: {
         DEFAULT: '#333333',
-        light: '#f5f5f5',
-        lighter: '#f9f9f9',
         dark: '#1a1a1a',
-        darker: '#111111',
+        light: '#f2f2f2',
       },
     },
     fontFamily: {
-      sans: ['Poppins', 'sans-serif'],
+      sans: ['Figtree', 'sans-serif'],
     },
   },
   plugins: [

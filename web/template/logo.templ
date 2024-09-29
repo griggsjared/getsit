@@ -1,0 +1,36 @@
+package template
+
+type logoSize string
+
+const (
+	logoSizeSmall  logoSize = "small"
+	logoSizeNormal logoSize = "normal"
+	logoSizeLarge  logoSize = "large"
+)
+
+type logoConfig struct {
+	size           logoSize
+	className      string
+	hasHoverStyles bool
+}
+
+templ logo(c logoConfig) {
+	<h1
+		class={ "font-medium text-gray tracking-tighter flex justify-start items-center",
+		templ.KV("text-2xl", c.size == logoSizeSmall),
+		templ.KV("text-6xl", c.size == logoSizeNormal),
+		templ.KV("text-8xl", c.size == logoSizeLarge),
+		templ.KV("hover:opacity-50", c.hasHoverStyles),
+		c.className }
+	>
+		<span class="font-black">
+			it.
+		</span>
+		<span class="text-green-dark">
+			gets
+		</span>
+		<span class="font-black">
+			it
+		</span>
+	</h1>
+}
