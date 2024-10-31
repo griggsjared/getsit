@@ -62,8 +62,8 @@ func (s *MemUrlEntryStore) Save(ctx context.Context, url entity.Url) (urlEntry *
 }
 
 // SaveVisit will increment the number of times the url has been visited
-func (s *MemUrlEntryStore) SaveVisit(ctx context.Context, token string) error {
-	if e, ok := s.entriesToken[entity.UrlToken(token)]; ok {
+func (s *MemUrlEntryStore) SaveVisit(ctx context.Context, token entity.UrlToken) error {
+	if e, ok := s.entriesToken[token]; ok {
 		e.VisitCount++
 		return nil
 	}
@@ -71,16 +71,16 @@ func (s *MemUrlEntryStore) SaveVisit(ctx context.Context, token string) error {
 }
 
 // GetFromToken will return the url entry for the given token
-func (s *MemUrlEntryStore) GetFromToken(ctx context.Context, token string) (*entity.UrlEntry, error) {
-	if e, ok := s.entriesToken[entity.UrlToken(token)]; ok {
+func (s *MemUrlEntryStore) GetFromToken(ctx context.Context, token entity.UrlToken) (*entity.UrlEntry, error) {
+	if e, ok := s.entriesToken[token]; ok {
 		return e, nil
 	}
 	return nil, fmt.Errorf("entry not found")
 }
 
 // GetFromUrl will return the url entry for the given url
-func (s *MemUrlEntryStore) GetFromUrl(ctx context.Context, url string) (*entity.UrlEntry, error) {
-	if e, ok := s.entriesUrl[entity.Url(url)]; ok {
+func (s *MemUrlEntryStore) GetFromUrl(ctx context.Context, url entity.Url) (*entity.UrlEntry, error) {
+	if e, ok := s.entriesUrl[url]; ok {
 		return e, nil
 	}
 	return nil, fmt.Errorf("entry not found")

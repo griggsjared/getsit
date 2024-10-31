@@ -44,7 +44,7 @@ func (s *MongoDBUrlEntryStore) Save(ctx context.Context, url entity.Url) (urlEnt
 		return nil, false, err
 	}
 
-	entry, err := s.GetFromUrl(ctx, string(url))
+	entry, err := s.GetFromUrl(ctx, url)
 	if err == nil {
 		return entry, false, nil
 	}
@@ -68,14 +68,14 @@ func (s *MongoDBUrlEntryStore) Save(ctx context.Context, url entity.Url) (urlEnt
 }
 
 // SaveVisit will increment the number of times the url has been visited
-func (s *MongoDBUrlEntryStore) SaveVisit(ctx context.Context, token string) error {
+func (s *MongoDBUrlEntryStore) SaveVisit(ctx context.Context, token entity.UrlToken) error {
 
 	coll, err := s.newUrlEntryCollection()
 	if err != nil {
 		return err
 	}
 
-	_, err = coll.UpdateOne(ctx, bson.M{"_id": token}, bson.M{"$inc": bson.M{"visit_count": 1}})
+	_, err = coll.UpdateOne(ctx, bson.M{"_id": string(token)}, bson.M{"$inc": bson.M{"visit_count": 1}})
 	if err != nil {
 		return err
 	}
@@ -84,7 +84,7 @@ func (s *MongoDBUrlEntryStore) SaveVisit(ctx context.Context, token string) erro
 }
 
 // GetFromToken will get the url entry from the token
-func (s *MongoDBUrlEntryStore) GetFromToken(ctx context.Context, token string) (*entity.UrlEntry, error) {
+func (s *MongoDBUrlEntryStore) GetFromToken(ctx context.Context, token entity.UrlToken) (*entity.UrlEntry, error) {
 
 	coll, err := s.newUrlEntryCollection()
 	if err != nil {
@@ -105,7 +105,7 @@ func (s *MongoDBUrlEntryStore) GetFromToken(ctx context.Context, token string) (
 }
 
 // GetFromUrl will get the url entry from the url
-func (s *MongoDBUrlEntryStore) GetFromUrl(ctx context.Context, url string) (*entity.UrlEntry, error) {
+func (s *MongoDBUrlEntryStore) GetFromUrl(ctx context.Context, url entity.Url) (*entity.UrlEntry, error) {
 
 	coll, err := s.newUrlEntryCollection()
 	if err != nil {
@@ -113,7 +113,7 @@ func (s *MongoDBUrlEntryStore) GetFromUrl(ctx context.Context, url string) (*ent
 	}
 
 	var schema mongoDBUrlEntrySchema
-	err = coll.FindOne(ctx, bson.M{"url": url}).Decode(&schema)
+	err = coll.FindOne(ctx, bson.M{"url": string(url)}).Decode(&schema)
 	if err != nil {
 		return nil, err
 	}

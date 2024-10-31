@@ -10,11 +10,11 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
+	"github.com/griggsjared/getsit/internal"
 	"github.com/griggsjared/getsit/internal/repository"
 )
 
 func main() {
-
 	err := godotenv.Load()
 	if err != nil {
 		fmt.Println("Error loading .env file")
@@ -40,15 +40,17 @@ func main() {
 		}
 	}()
 
+	fmt.Println("Setting up services")
+
 	r := repository.NewMongoDBUrlEntryStore(client)
 
-	router := &appRouter{
-		repo: r,
+	handler := &appHandler{
+		service: internal.NewService(r),
 	}
 
 	mux := http.NewServeMux()
 
-	router.setup(mux)
+	handler.setup(mux)
 
 	mux.Handle("/assets/",
 		http.StripPrefix("/assets/",
@@ -73,6 +75,8 @@ func main() {
 	}
 
 	server.ListenAndServe()
+
+	fmt.Println("Server started on", serveAddr)
 }
 
 // setupMongoDB will setup the connection to the MongoDB database
