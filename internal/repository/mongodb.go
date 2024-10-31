@@ -75,7 +75,7 @@ func (s *MongoDBUrlEntryStore) SaveVisit(ctx context.Context, token entity.UrlTo
 		return err
 	}
 
-	_, err = coll.UpdateOne(ctx, bson.M{"_id": string(token)}, bson.M{"$inc": bson.M{"visit_count": 1}})
+	_, err = coll.UpdateOne(ctx, bson.M{"_id": token.String()}, bson.M{"$inc": bson.M{"visit_count": 1}})
 	if err != nil {
 		return err
 	}
@@ -92,7 +92,7 @@ func (s *MongoDBUrlEntryStore) GetFromToken(ctx context.Context, token entity.Ur
 	}
 
 	var entry mongoDBUrlEntrySchema
-	err = coll.FindOne(ctx, bson.M{"_id": token}).Decode(&entry)
+	err = coll.FindOne(ctx, bson.M{"_id": token.String()}).Decode(&entry)
 	if err != nil {
 		return nil, err
 	}
@@ -113,7 +113,7 @@ func (s *MongoDBUrlEntryStore) GetFromUrl(ctx context.Context, url entity.Url) (
 	}
 
 	var schema mongoDBUrlEntrySchema
-	err = coll.FindOne(ctx, bson.M{"url": string(url)}).Decode(&schema)
+	err = coll.FindOne(ctx, bson.M{"url": url.String()}).Decode(&schema)
 	if err != nil {
 		return nil, err
 	}

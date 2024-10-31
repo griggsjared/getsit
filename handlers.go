@@ -65,14 +65,14 @@ func (ah *appHandler) handleRedirect(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = ah.service.VisitUrl(r.Context(), &internal.VisitUrlInput{
-		Token: string(entry.Token),
+		Token: entry.Token.String(),
 	})
 	if err != nil {
 		fmt.Fprintln(w, "Error saving visit")
 		return
 	}
 
-	http.Redirect(w, r, string(entry.Url), http.StatusFound)
+	http.Redirect(w, r, entry.Url.String(), http.StatusFound)
 }
 
 // handleInfo will show the information about the url entry

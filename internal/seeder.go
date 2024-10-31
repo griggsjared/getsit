@@ -53,7 +53,7 @@ func SeedUrlEntries(tCount int, store SeederStore) {
 	}()
 
 	for i := 0; i < tCount; i++ {
-		url := entity.Url("https://example.com/" + string(entity.NewUrlToken()))
+		url := entity.Url("https://example.com/" + entity.NewUrlToken().String())
 		e, new, err := store.Save(context.Background(), url)
 
 		if err != nil {
@@ -67,6 +67,6 @@ func SeedUrlEntries(tCount int, store SeederStore) {
 			genCount++
 		}
 
-		store.SaveVisit(context.Background(), string(e.Token))
+		store.SaveVisit(context.Background(), e.Token.String())
 	}
 }

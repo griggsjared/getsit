@@ -53,7 +53,7 @@ func (u Url) Validate() error {
 	}
 
 	// Check if the url is a valid url
-	if _, err := url.Parse(string(u)); err != nil {
+	if _, err := url.Parse(u.String()); err != nil {
 		return fmt.Errorf("url is not valid")
 	}
 
