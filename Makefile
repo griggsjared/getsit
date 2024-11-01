@@ -55,3 +55,15 @@ dev/sync_assets:
 # start all dev/ tasks in parallel.
 dev:
 	make -j6 dev/templ dev/server dev/sync_assets dev/tailwind
+
+migrate:
+	GOOSE_DRIVER=postgres GOOSE_DBSTRING=${DATABASE_DSN} goose -dir ./database/migrations $(ARGS)
+
+migrate/status:
+	ARGS="status" make migrate
+
+migrate/up:
+	ARGS="up" make migrate
+
+migrate/down:
+	ARGS="down" make migrate

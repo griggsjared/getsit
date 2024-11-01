@@ -18,7 +18,7 @@ type withValidationErrors struct {
 // UrlEntryRepository is the interface for the url entry repository used in the internal.Service struct
 type UrlEntryRepository interface {
 	// Save will url entry to the store
-	Save(ctx context.Context, url entity.Url) (entry *entity.UrlEntry, new bool, err error)
+	SaveUrl(ctx context.Context, url entity.Url) (entry *entity.UrlEntry, err error)
 	// SaveVisit will increment the number of times the url has been visited
 	SaveVisit(ctx context.Context, token entity.UrlToken) error
 	// GetFromToken will get the url entry from the token
@@ -56,7 +56,7 @@ func (s *Service) SaveUrl(ctx context.Context, input *SaveUrlInput) (*entity.Url
 	}
 
 	// Save the url
-	entry, _, err := s.repo.Save(ctx, urlEntry)
+	entry, err := s.repo.SaveUrl(ctx, urlEntry)
 	if err != nil {
 		return nil, errors.New("failed to save url")
 	}

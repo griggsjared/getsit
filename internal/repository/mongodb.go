@@ -37,16 +37,16 @@ type mongoDBUrlEntrySchema struct {
 }
 
 // Save will save the url entry to the store
-func (s *MongoDBUrlEntryStore) Save(ctx context.Context, url entity.Url) (urlEntry *entity.UrlEntry, new bool, err error) {
+func (s *MongoDBUrlEntryStore) SaveUrl(ctx context.Context, url entity.Url) (*entity.UrlEntry, error) {
 
 	coll, err := s.newUrlEntryCollection()
 	if err != nil {
-		return nil, false, err
+		return nil, err
 	}
 
 	entry, err := s.GetFromUrl(ctx, url)
 	if err == nil {
-		return entry, false, nil
+		return entry, nil
 	}
 
 	newEntry := mongoDBUrlEntrySchema{
@@ -57,14 +57,14 @@ func (s *MongoDBUrlEntryStore) Save(ctx context.Context, url entity.Url) (urlEnt
 
 	_, err = coll.InsertOne(ctx, newEntry)
 	if err != nil {
-		return nil, false, err
+		return nil, err
 	}
 
 	return &entity.UrlEntry{
 		Url:        newEntry.Url,
 		Token:      newEntry.Token,
 		VisitCount: newEntry.VisitCount,
-	}, true, nil
+	}, nil
 }
 
 // SaveVisit will increment the number of times the url has been visited

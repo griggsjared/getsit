@@ -28,19 +28,13 @@ func NewMemUrlEntryStore() *MemUrlEntryStore {
 }
 
 // Save will save the url entry to the store
-func (s *MemUrlEntryStore) Save(ctx context.Context, url entity.Url) (urlEntry *entity.UrlEntry, new bool, err error) {
+func (s *MemUrlEntryStore) SaveUrl(ctx context.Context, url entity.Url) (*entity.UrlEntry, error) {
 
 	var entry *entity.UrlEntry
 
-	// Check if the url entry already exists
-	// if it does we just grab the entry
-	// if it does not we create a new entry
-	var exists bool
 	if e, ok := s.entriesUrl[url]; ok {
-		exists = true
 		entry = e
 	} else {
-		exists = false
 		var token entity.UrlToken
 		for {
 			token = entity.NewUrlToken()
@@ -58,7 +52,7 @@ func (s *MemUrlEntryStore) Save(ctx context.Context, url entity.Url) (urlEntry *
 	s.entriesToken[entry.Token] = entry
 	s.entriesUrl[entry.Url] = entry
 
-	return entry, !exists, nil
+	return entry, nil
 }
 
 // SaveVisit will increment the number of times the url has been visited

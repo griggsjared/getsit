@@ -44,7 +44,17 @@ func (ah *appHandler) handleCreate(w http.ResponseWriter, r *http.Request) {
 
 	entry, err := ah.service.SaveUrl(r.Context(), input)
 	if err != nil {
-		fmt.Fprintln(w, input.ValidationErrors)
+		// TODO: we need to handle the errors here so they are not just dumped to the screen.
+		// We can redirect back with an error message to show on the page
+		if len(input.ValidationErrors) > 0 {
+			fmt.Fprintln(w, "Validation Errors:")
+			for _, v := range input.ValidationErrors {
+				fmt.Fprintf(w, "%s", v)
+			}
+		} else {
+			fmt.Fprintln(w, "Error saving url")
+		}
+		// http.Redirect(w, r, "/?err=Oops", http.StatusMovedPermanently)
 		return
 	}
 

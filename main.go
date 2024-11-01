@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -13,6 +14,8 @@ import (
 	"github.com/griggsjared/getsit/internal"
 	"github.com/griggsjared/getsit/internal/repository"
 )
+
+const database = "POSTGRES"
 
 func main() {
 	err := godotenv.Load()
@@ -23,26 +26,44 @@ func main() {
 
 	ctx := context.Background()
 
-	dbUri := os.Getenv("MONGODB_URI")
-	if dbUri == "" {
-		fmt.Println("MONGODB_URI is not set")
-		os.Exit(1)
-	}
+	var r internal.UrlEntryRepository
 
-	client, err := setupMongoDB(ctx, dbUri)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	defer func() {
-		if err = client.Disconnect(ctx); err != nil {
-			fmt.Println(err)
+	if database == "MONGO" {
+		dsn := os.Getenv("MONGODB_DSN")
+		if dsn == "" {
+			fmt.Println("MONGODB_DSN is not set")
+			os.Exit(1)
 		}
-	}()
 
-	fmt.Println("Setting up services")
+		client, err := setupMongoDB(ctx, dsn)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		defer func() {
+			if err = client.Disconnect(ctx); err != nil {
+				fmt.Println(err)
+			}
+		}()
+		r = repository.NewMongoDBUrlEntryStore(client)
 
-	r := repository.NewMongoDBUrlEntryStore(client)
+	} else {
+
+		dsn := os.Getenv("POSTGRES_DSN")
+		if dsn == "" {
+			fmt.Println("POSTGRES_DSN is not set")
+			os.Exit(1)
+		}
+
+		db, err := pgxpool.New(ctx, dsn)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		defer db.Close()
+
+		r = repository.NewPGXUrlEntryStore(db)
+	}
 
 	handler := &appHandler{
 		service: internal.NewService(r),
