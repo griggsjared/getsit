@@ -54,16 +54,27 @@ dev/sync_assets:
 
 # start all dev/ tasks in parallel.
 dev:
-	make -j6 dev/templ dev/server dev/sync_assets dev/tailwind
+	make migrate/up && make -j6 dev/templ dev/server dev/sync_assets dev/tailwind
 
+# run the base goose command to manage the database migrations.
 migrate:
 	GOOSE_DRIVER=postgres GOOSE_DBSTRING=${DATABASE_DSN} goose -dir ./database/migrations $(ARGS)
 
+# run the goose status command to check the current migration status.
 migrate/status:
 	ARGS="status" make migrate
 
+# run the goose up command to apply all pending migrations.
 migrate/up:
 	ARGS="up" make migrate
 
+migrate/up-one:
+	ARGS="up-by-one" make migrate
+
+# run the goose down command to rollback the last migration.
 migrate/down:
 	ARGS="down" make migrate
+
+# run a series of commands to reset the database and re-apply all migrations.
+migrate/fresh:
+	ARGS="reset" make migrate && ARGS="up" make migrate/up
