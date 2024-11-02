@@ -3,9 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
+	"github.com/gorilla/csrf"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,14 +17,15 @@ import (
 	"github.com/griggsjared/getsit/internal/repository"
 )
 
+type app struct {
+	service *internal.Service
+	logger  *log.Logger
+}
+
 const database = "POSTGRES"
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Println("Error loading .env file")
-		os.Exit(1)
-	}
+	godotenv.Load()
 
 	ctx := context.Background()
 
@@ -65,18 +68,37 @@ func main() {
 		r = repository.NewPGXUrlEntryStore(db)
 	}
 
-	handler := &appHandler{
+	logger := log.New(os.Stdout, "", log.LstdFlags)
+
+	app := &app{
 		service: internal.NewService(r),
+		logger:  logger,
 	}
+
+	token := os.Getenv("CSRF_TOKEN")
+	if token == "" {
+		fmt.Println("CSRF_TOKEN is not set")
+		os.Exit(1)
+	}
+
+	csrf := csrf.Protect(
+		[]byte(token),
+		csrf.Secure(false),
+		csrf.CookieName("CSRF-TOKEN"),
+		csrf.RequestHeader("X-CSRF-TOKEN"),
+		csrf.FieldName("csrf_token"),
+	)
 
 	mux := http.NewServeMux()
 
-	handler.setup(mux)
+	mux.HandleFunc("GET /{$}", app.middlewareStackFunc(app.homepageHandler, csrf))
+	mux.HandleFunc("POST /create", app.middlewareStackFunc(app.createHandler, csrf))
+	mux.HandleFunc("GET /i/{token}", app.infoHandler)
+	mux.HandleFunc("GET /{token}", app.redirectHandler)
+	mux.HandleFunc("/", app.notFoundHandler)
 
-	mux.Handle("/assets/",
-		http.StripPrefix("/assets/",
-			http.FileServer(
-				http.Dir("web/public"))))
+	fileServer := http.FileServer(http.Dir("web/public"))
+	mux.Handle("/assets/", http.StripPrefix("/assets/", fileServer))
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -84,20 +106,14 @@ func main() {
 	}
 
 	host := os.Getenv("HOST")
-
-	serveAddr := ":" + port
+	serverAddr := ":" + port
 	if host != "" {
-		serveAddr = host + serveAddr
+		serverAddr = host + serverAddr
 	}
 
-	server := &http.Server{
-		Addr:    serveAddr,
-		Handler: mux,
-	}
+	http.ListenAndServe(serverAddr, app.middlewareStack(mux, app.loggerMiddleware))
 
-	server.ListenAndServe()
-
-	fmt.Println("Server started on", serveAddr)
+	fmt.Println("Server started on", serverAddr)
 }
 
 // setupMongoDB will setup the connection to the MongoDB database

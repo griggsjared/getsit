@@ -2,12 +2,17 @@ package template
 
 import "strconv"
 
-templ Homepage() {
+type HomepageViewModel struct {
+	CsrfToken string
+}
+
+templ Homepage(vm HomepageViewModel) {
 	@layout("") {
 		<div class="max-w-2xl mx-auto space-y-12">
 			@header(headerConfig{logoSize: logoSizeLarge})
 			<div>
 				<form action="/create" method="post">
+					<input type="hidden" name="csrf_token" value={ vm.CsrfToken }/>
 					<div class="flex justify-start items-center gap-2" novalidate>
 						<input type="url" name="url" class="w-full p-2 bg-gray-lightest border border-green-dark rounded" placeholder="Enter URL"/>
 						@button(buttonConfig{text: "Get It", buttonType: "submit", className: "flex-shrink-0"})
@@ -32,6 +37,7 @@ templ Homepage() {
 }
 
 type InfoViewModel struct {
+	ShortUrl   string
 	Url        string
 	Token      string
 	VisitCount int
@@ -42,8 +48,9 @@ templ Info(vm InfoViewModel) {
 		<div class="max-w-2xl mx-auto space-y-6">
 			@header(headerConfig{logoSize: logoSizeNormal})
 			<div>
-				<div>Token: { vm.Token }</div>
-				<div>Url: { vm.Url }</div>
+				<div class="text-2xl font-bold">Info</div>
+				<div>Short URL: <a href={ templ.SafeURL("http://" + vm.ShortUrl) }>{ vm.ShortUrl }</a></div>
+				<div>Full Url: { vm.Url }</div>
 				<div>Visit Count: { strconv.Itoa(vm.VisitCount) }</div>
 			</div>
 			<div>
