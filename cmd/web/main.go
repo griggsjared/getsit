@@ -13,12 +13,12 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
-	"github.com/griggsjared/getsit/internal"
 	"github.com/griggsjared/getsit/internal/repository"
+	"github.com/griggsjared/getsit/internal/service"
 )
 
 type app struct {
-	service *internal.Service
+	service *service.Service
 	logger  *log.Logger
 }
 
@@ -29,7 +29,7 @@ func main() {
 
 	ctx := context.Background()
 
-	var r internal.UrlEntryRepository
+	var r service.UrlEntryRepository
 
 	if database == "MONGO" {
 		dsn := os.Getenv("MONGODB_DSN")
@@ -48,7 +48,7 @@ func main() {
 				fmt.Println(err)
 			}
 		}()
-		r = repository.NewMongoDBUrlEntryStore(client)
+		r = repository.NewMongoDBUrlEntryRepository(client)
 
 	} else {
 
@@ -65,13 +65,13 @@ func main() {
 		}
 		defer db.Close()
 
-		r = repository.NewPGXUrlEntryStore(db)
+		r = repository.NewPGXUrlEntryRepository(db)
 	}
 
 	logger := log.New(os.Stdout, "", log.LstdFlags)
 
 	app := &app{
-		service: internal.NewService(r),
+		service: service.New(r),
 		logger:  logger,
 	}
 
