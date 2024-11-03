@@ -2,7 +2,7 @@ package template
 
 templ layout(title string) {
 	<!DOCTYPE html>
-	<html lang="en">
+	<html lang="en" class="h-full">
 		<head>
 			<meta charset="utf-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
@@ -14,10 +14,10 @@ templ layout(title string) {
 				if title != "" {
 					{ title } -
 				}
-				it.getsit - Shorten your URLs
+				it.getsit - it makes your URLs... shorter
 			</title>
 		</head>
-		<body>
+		<body class="h-full w-full">
 			<div class="h-full p-4 antialiased sm:p-10 text-gray bg-gray-light">
 				{ children... }
 			</div>
@@ -34,7 +34,7 @@ templ header(c headerConfig) {
 		<a href="/" class="block">
 			@logo(logoConfig{size: c.logoSize, hasHoverStyles: true})
 		</a>
-		<div class="text-gray text-xl font-bold">Shorten your URLs</div>
+		<div class="text-gray text-xl font-bold">it makes your URLs... shorter</div>
 	</header>
 }
 
