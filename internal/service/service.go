@@ -1,4 +1,4 @@
-package internal
+package service
 
 import (
 	"context"
@@ -15,7 +15,7 @@ type withValidationErrors struct {
 	ValidationErrors map[string]string
 }
 
-// UrlEntryRepository is the interface for the url entry repository used in the internal.Service struct
+// UrlEntryRepository is the interface that defines the method that the service will use to interact with the repository
 type UrlEntryRepository interface {
 	// Save will url entry to the store
 	SaveUrl(ctx context.Context, url entity.Url) (entry *entity.UrlEntry, err error)
@@ -31,7 +31,7 @@ type Service struct {
 	repo UrlEntryRepository
 }
 
-func NewService(repo UrlEntryRepository) *Service {
+func New(repo UrlEntryRepository) *Service {
 	return &Service{
 		repo: repo,
 	}
@@ -58,7 +58,7 @@ func (s *Service) SaveUrl(ctx context.Context, input *SaveUrlInput) (*entity.Url
 	// Save the url
 	entry, err := s.repo.SaveUrl(ctx, urlEntry)
 	if err != nil {
-		return nil, errors.New("failed to save url")
+		return nil, err
 	}
 
 	return entry, nil

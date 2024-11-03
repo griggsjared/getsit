@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/griggsjared/getsit/internal"
+	"github.com/griggsjared/getsit/internal/service"
 	"github.com/griggsjared/getsit/web/template"
 
 	"github.com/gorilla/csrf"
@@ -30,7 +30,7 @@ func (a *app) homepageHandler(w http.ResponseWriter, r *http.Request) {
 // if successful, we will redirect to /i/{token} to show the information about the url entry
 func (a *app) createHandler(w http.ResponseWriter, r *http.Request) {
 
-	input := &internal.SaveUrlInput{
+	input := &service.SaveUrlInput{
 		Url: r.FormValue("url"),
 	}
 
@@ -58,7 +58,7 @@ func (a *app) createHandler(w http.ResponseWriter, r *http.Request) {
 // if successful, we record the visit and redirect to the long url
 func (a *app) redirectHandler(w http.ResponseWriter, r *http.Request) {
 
-	entry, err := a.service.GetUrl(r.Context(), &internal.GetUrlInput{
+	entry, err := a.service.GetUrl(r.Context(), &service.GetUrlInput{
 		Token: r.PathValue("token"),
 	})
 	if err != nil {
@@ -66,7 +66,7 @@ func (a *app) redirectHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = a.service.VisitUrl(r.Context(), &internal.VisitUrlInput{
+	err = a.service.VisitUrl(r.Context(), &service.VisitUrlInput{
 		Token: entry.Token.String(),
 	})
 	if err != nil {
@@ -82,7 +82,7 @@ func (a *app) redirectHandler(w http.ResponseWriter, r *http.Request) {
 // if successful, we will show the url, token, and the number of times the url has been visited
 func (a *app) infoHandler(w http.ResponseWriter, r *http.Request) {
 
-	entry, err := a.service.GetUrl(r.Context(), &internal.GetUrlInput{
+	entry, err := a.service.GetUrl(r.Context(), &service.GetUrlInput{
 		Token: r.PathValue("token"),
 	})
 	if err != nil {
