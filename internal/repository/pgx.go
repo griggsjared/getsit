@@ -8,12 +8,12 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type PGXUrlEntryStore struct {
+type PGXUrlEntryRepository struct {
 	db *pgxpool.Pool
 }
 
-func NewPGXUrlEntryStore(db *pgxpool.Pool) *PGXUrlEntryStore {
-	return &PGXUrlEntryStore{
+func NewPGXUrlEntryRepository(db *pgxpool.Pool) *PGXUrlEntryRepository {
+	return &PGXUrlEntryRepository{
 		db: db,
 	}
 }
@@ -24,7 +24,7 @@ type urlEntry struct {
 	VisitCount int
 }
 
-func (s *PGXUrlEntryStore) SaveUrl(ctx context.Context, url entity.Url) (*entity.UrlEntry, error) {
+func (s *PGXUrlEntryRepository) SaveUrl(ctx context.Context, url entity.Url) (*entity.UrlEntry, error) {
 
 	//if the url already exists return the entry
 	entry, err := s.GetFromUrl(ctx, url)
@@ -42,12 +42,22 @@ func (s *PGXUrlEntryStore) SaveUrl(ctx context.Context, url entity.Url) (*entity
 		}
 	}
 
-	//insert the new url entry
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback(ctx)
+
 	query := `
 		INSERT INTO url_entries (url, token)
 		VALUES ($1, $2)
 	`
-	_, err = s.db.Query(ctx, query, url, token.String())
+	_, err = s.db.Exec(ctx, query, url, token.String())
+	if err != nil {
+		return nil, err
+	}
+
+	err = tx.Commit(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +69,7 @@ func (s *PGXUrlEntryStore) SaveUrl(ctx context.Context, url entity.Url) (*entity
 	}, nil
 }
 
-func (s *PGXUrlEntryStore) SaveVisit(ctx context.Context, token entity.UrlToken) error {
+func (s *PGXUrlEntryRepository) SaveVisit(ctx context.Context, token entity.UrlToken) error {
 
 	query := `
 		UPDATE url_entries
@@ -75,7 +85,7 @@ func (s *PGXUrlEntryStore) SaveVisit(ctx context.Context, token entity.UrlToken)
 	return nil
 }
 
-func (s *PGXUrlEntryStore) GetFromUrl(ctx context.Context, url entity.Url) (*entity.UrlEntry, error) {
+func (s *PGXUrlEntryRepository) GetFromUrl(ctx context.Context, url entity.Url) (*entity.UrlEntry, error) {
 
 	query := `
 		SELECT token, url, visit_count
@@ -98,7 +108,7 @@ func (s *PGXUrlEntryStore) GetFromUrl(ctx context.Context, url entity.Url) (*ent
 	}, nil
 }
 
-func (s *PGXUrlEntryStore) GetFromToken(ctx context.Context, token entity.UrlToken) (*entity.UrlEntry, error) {
+func (s *PGXUrlEntryRepository) GetFromToken(ctx context.Context, token entity.UrlToken) (*entity.UrlEntry, error) {
 
 	query := `
 		SELECT token, url, visit_count
