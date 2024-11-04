@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/gorilla/csrf"
+	"github.com/gorilla/sessions"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 
@@ -18,14 +19,13 @@ import (
 type app struct {
 	service *service.Service
 	logger  *log.Logger
+	session *sessions.CookieStore
 }
 
 func main() {
 	godotenv.Load()
 
 	ctx := context.Background()
-
-	var r service.UrlEntryRepository
 
 	dsn := os.Getenv("DATABASE_DSN")
 	if dsn == "" {
@@ -40,23 +40,26 @@ func main() {
 	}
 	defer db.Close()
 
-	r = repository.NewPGXUrlEntryRepository(db)
-
-	logger := log.New(os.Stdout, "", log.LstdFlags)
-
-	app := &app{
-		service: service.New(r),
-		logger:  logger,
+	sessionSecret := os.Getenv("SESSION_SECRET")
+	if sessionSecret == "" {
+		fmt.Println("SESSION_SECRET is required")
+		os.Exit(1)
 	}
 
-	token := os.Getenv("CSRF_TOKEN")
-	if token == "" {
+	csrfSecret := os.Getenv("CSRF_TOKEN")
+	if csrfSecret == "" {
 		fmt.Println("CSRF_TOKEN is not set")
 		os.Exit(1)
 	}
 
-	csrf := csrf.Protect(
-		[]byte(token),
+	app := &app{
+		service: service.New(repository.NewPGXUrlEntryRepository(db)),
+		logger:  log.New(os.Stdout, "", log.LstdFlags),
+		session: sessions.NewCookieStore([]byte(sessionSecret)),
+	}
+
+	csrfMiddleware := csrf.Protect(
+		[]byte(csrfSecret),
 		csrf.Secure(false),
 		csrf.CookieName("CSRF-TOKEN"),
 		csrf.RequestHeader("X-CSRF-TOKEN"),
@@ -65,8 +68,8 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /{$}", app.middlewareStackFunc(app.homepageHandler, csrf))
-	mux.HandleFunc("POST /create", app.middlewareStackFunc(app.createHandler, csrf))
+	mux.HandleFunc("GET /{$}", app.middlewareStackFunc(app.homepageHandler, csrfMiddleware))
+	mux.HandleFunc("POST /create", app.middlewareStackFunc(app.createHandler, csrfMiddleware))
 	mux.HandleFunc("GET /i/{token}", app.infoHandler)
 	mux.HandleFunc("GET /{token}", app.redirectHandler)
 	mux.HandleFunc("/", app.notFoundHandler)
@@ -85,7 +88,7 @@ func main() {
 		serverAddr = host + serverAddr
 	}
 
-	http.ListenAndServe(serverAddr, app.middlewareStack(mux, app.loggerMiddleware))
+	http.ListenAndServe(serverAddr, app.middlewareStack(mux, app.loggerMiddleware, app.gzipMiddleware))
 
 	fmt.Println("Server started on", serverAddr)
 }

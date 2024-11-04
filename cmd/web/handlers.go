@@ -18,6 +18,8 @@ func (a *app) homepageHandler(w http.ResponseWriter, r *http.Request) {
 
 	err := template.Homepage(template.HomepageViewModel{
 		CsrfToken: token,
+		Message:   a.getFlashMessage(w, r),
+		Errors:    a.getFlashErrors(w, r),
 	}).Render(r.Context(), w)
 	if err != nil {
 		http.Error(w, "Failed to render homepage", http.StatusInternalServerError)
@@ -36,17 +38,12 @@ func (a *app) createHandler(w http.ResponseWriter, r *http.Request) {
 
 	entry, err := a.service.SaveUrl(r.Context(), input)
 	if err != nil {
-		// TODO: we need to handle the errors here so they are not just dumped to the screen.
-		// We can redirect back with an error message to show on the page
 		if len(input.ValidationErrors) > 0 {
-			fmt.Fprintln(w, "Validation Errors:")
-			for _, v := range input.ValidationErrors {
-				fmt.Fprintf(w, "%s", v)
-			}
+			a.setFlashErrors(w, r, input.ValidationErrors)
 		} else {
-			fmt.Fprintln(w, "Error saving url")
+			a.setFlashErrors(w, r, map[string]string{"error": "Failed to save url"})
 		}
-		// http.Redirect(w, r, "/?err=Oops", http.StatusMovedPermanently)
+		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}
 

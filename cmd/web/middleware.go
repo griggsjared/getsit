@@ -5,9 +5,10 @@ import (
 	"time"
 )
 
+// middleware is a type that wraps an http.Handler and returns a new http.Handler
 type middleware func(http.Handler) http.Handler
 
-// stack will take a handler and a list of middlewares and return a new handler
+// middlewareStack will take a handler and a list of middlewares and return a new handler
 func (a *app) middlewareStack(h http.Handler, middlewares ...middleware) http.Handler {
 	for _, middleware := range middlewares {
 		h = middleware(h)
@@ -15,15 +16,28 @@ func (a *app) middlewareStack(h http.Handler, middlewares ...middleware) http.Ha
 	return h
 }
 
-// stackFunc will take a handler function and a list of middlewares and return a new handler
+// middlewareStackFunc will take a handler and a list of middlewares and return a new handler.
+// This is a convenience function that wraps middlewareStack to work with http.HandlerFunc
 func (a *app) middlewareStackFunc(h http.HandlerFunc, middleware ...middleware) http.HandlerFunc {
 	return a.middlewareStack(h, middleware...).ServeHTTP
 }
 
+// loggerMiddleware records the and method of the incoming request and the time taken to process the request
 func (a *app) loggerMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 		next.ServeHTTP(w, r)
-		a.logger.Println(time.Since(start), r.Method, r.URL.Path)
+		a.logger.Println(
+			"method", r.Method,
+			"path", r.URL.Path,
+			"duration", time.Since(start),
+		)
+	})
+}
+
+func (a *app) gzipMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// w.Header().Set("Content-Encoding", "gzip")
+		next.ServeHTTP(w, r)
 	})
 }

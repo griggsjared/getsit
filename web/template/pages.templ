@@ -4,6 +4,8 @@ import "strconv"
 
 type HomepageViewModel struct {
 	CsrfToken string
+	Message   string
+	Errors    map[string]string
 }
 
 templ Homepage(vm HomepageViewModel) {
@@ -11,6 +13,8 @@ templ Homepage(vm HomepageViewModel) {
 		<div class="max-w-2xl mx-auto space-y-12">
 			@header(headerConfig{logoSize: logoSizeLarge})
 			<div>
+				@message(vm.Message)
+				@errors(vm.Errors)
 				<form action="/create" method="post">
 					<input type="hidden" name="csrf_token" value={ vm.CsrfToken }/>
 					<div class="flex justify-start items-center gap-2" novalidate>
