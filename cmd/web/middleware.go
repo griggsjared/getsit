@@ -34,10 +34,3 @@ func (a *app) loggerMiddleware(next http.Handler) http.Handler {
 		)
 	})
 }
-
-func (a *app) gzipMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// w.Header().Set("Content-Encoding", "gzip")
-		next.ServeHTTP(w, r)
-	})
-}
