@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/griggsjared/getsit/internal/entity"
 
@@ -26,10 +27,10 @@ type urlEntry struct {
 
 func (s *PGXUrlEntryRepository) SaveUrl(ctx context.Context, url entity.Url) (*entity.UrlEntry, error) {
 
-	//if the url already exists return the entry
-	entry, err := s.GetFromUrl(ctx, url)
+	//if the url already exists escape with an error
+	_, err := s.GetFromUrl(ctx, url)
 	if err == nil {
-		return entry, nil
+		return nil, fmt.Errorf("entry already exists")
 	}
 
 	//find a unique token

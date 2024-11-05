@@ -80,3 +80,7 @@ migrate/down:
 # run a series of commands to reset the database and re-apply all migrations.
 migrate/fresh:
 	ARGS="reset" make migrate && ARGS="up" make migrate/up
+
+# run the test command to run all tests in the project with coverage.
+test:
+	go test -cover ./internal/service ./internal/entity

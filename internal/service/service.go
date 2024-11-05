@@ -31,6 +31,7 @@ type Service struct {
 	repo UrlEntryRepository
 }
 
+// New will create a new service
 func New(repo UrlEntryRepository) *Service {
 	return &Service{
 		repo: repo,
@@ -65,13 +66,13 @@ func (s *Service) SaveUrl(ctx context.Context, input *SaveUrlInput) (*entity.Url
 }
 
 // GetUrlInput is the input struct for the GetUrl method
-type GetUrlInput struct {
+type GetUrlByTokenInput struct {
 	withValidationErrors
 	Token string
 }
 
 // GetUrl will get the url entry from the url string
-func (s *Service) GetUrl(ctx context.Context, input *GetUrlInput) (*entity.UrlEntry, error) {
+func (s *Service) GetUrlByToken(ctx context.Context, input *GetUrlByTokenInput) (*entity.UrlEntry, error) {
 
 	input.ValidationErrors = make(map[string]string)
 
@@ -91,13 +92,41 @@ func (s *Service) GetUrl(ctx context.Context, input *GetUrlInput) (*entity.UrlEn
 	return entry, nil
 }
 
-type VisitUrlInput struct {
+// GetUrlInput is the input struct for the GetUrl method
+type GetUrlByUrlInput struct {
+	withValidationErrors
+	Url string
+}
+
+// GetUrl will get the url entry from the url string
+func (s *Service) GetUrlByUrl(ctx context.Context, input *GetUrlByUrlInput) (*entity.UrlEntry, error) {
+
+	input.ValidationErrors = make(map[string]string)
+
+	// Validate the url
+	urlEntry := entity.Url(input.Url)
+	if err := urlEntry.Validate(); err != nil {
+		input.ValidationErrors["url"] = err.Error()
+		return nil, ErrValidation
+	}
+
+	// Get the url entry
+	entry, err := s.repo.GetFromUrl(ctx, urlEntry)
+	if err != nil {
+		return nil, errors.New("failed to get url")
+	}
+
+	return entry, nil
+}
+
+// VisitUrlInput is the input struct for the VisitUrl method
+type VisitUrlByTokenInput struct {
 	withValidationErrors
 	Token string
 }
 
 // VisitUrl will increment the number of times the url has been visited
-func (s *Service) VisitUrl(ctx context.Context, input *VisitUrlInput) error {
+func (s *Service) VisitUrlByToken(ctx context.Context, input *VisitUrlByTokenInput) error {
 
 	input.ValidationErrors = make(map[string]string)
 

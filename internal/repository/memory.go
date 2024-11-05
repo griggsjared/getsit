@@ -32,21 +32,22 @@ func (s *MemUrlEntryRepository) SaveUrl(ctx context.Context, url entity.Url) (*e
 
 	var entry *entity.UrlEntry
 
-	if e, ok := s.entriesUrl[url]; ok {
-		entry = e
-	} else {
-		var token entity.UrlToken
-		for {
-			token = entity.NewUrlToken()
-			if _, ok := s.entriesToken[token]; !ok {
-				break
-			}
+	//if the url already exists escape with an error
+	if _, ok := s.entriesUrl[url]; ok {
+		return nil, fmt.Errorf("entry already exists")
+	}
+
+	var token entity.UrlToken
+	for {
+		token = entity.NewUrlToken()
+		if _, ok := s.entriesToken[token]; !ok {
+			break
 		}
-		entry = &entity.UrlEntry{
-			Url:        url,
-			Token:      token,
-			VisitCount: 0,
-		}
+	}
+	entry = &entity.UrlEntry{
+		Url:        url,
+		Token:      token,
+		VisitCount: 0,
 	}
 
 	s.entriesToken[entry.Token] = entry

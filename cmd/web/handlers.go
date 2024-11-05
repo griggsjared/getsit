@@ -10,8 +10,7 @@ import (
 	"github.com/gorilla/csrf"
 )
 
-// homepageHandler will show the homepage of the application
-// for now, this shows instructions on how to use the application
+// homepageHandler will show the homepage of the application that shows the form to create a new short url
 func (a *app) homepageHandler(w http.ResponseWriter, r *http.Request) {
 
 	token := csrf.Token(r)
@@ -31,6 +30,13 @@ func (a *app) homepageHandler(w http.ResponseWriter, r *http.Request) {
 // The long url is sent as a POST request to /create
 // if successful, we will redirect to /i/{token} to show the information about the url entry
 func (a *app) createHandler(w http.ResponseWriter, r *http.Request) {
+
+	if exists, _ := a.service.GetUrlByUrl(r.Context(), &service.GetUrlByUrlInput{
+		Url: r.FormValue("url"),
+	}); exists != nil {
+		http.Redirect(w, r, fmt.Sprintf("/i/%s", exists.Token), http.StatusMovedPermanently)
+		return
+	}
 
 	input := &service.SaveUrlInput{
 		Url: r.FormValue("url"),
@@ -55,7 +61,7 @@ func (a *app) createHandler(w http.ResponseWriter, r *http.Request) {
 // if successful, we record the visit and redirect to the long url
 func (a *app) redirectHandler(w http.ResponseWriter, r *http.Request) {
 
-	entry, err := a.service.GetUrl(r.Context(), &service.GetUrlInput{
+	entry, err := a.service.GetUrlByToken(r.Context(), &service.GetUrlByTokenInput{
 		Token: r.PathValue("token"),
 	})
 	if err != nil {
@@ -63,7 +69,7 @@ func (a *app) redirectHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = a.service.VisitUrl(r.Context(), &service.VisitUrlInput{
+	err = a.service.VisitUrlByToken(r.Context(), &service.VisitUrlByTokenInput{
 		Token: entry.Token.String(),
 	})
 	if err != nil {
@@ -79,7 +85,7 @@ func (a *app) redirectHandler(w http.ResponseWriter, r *http.Request) {
 // if successful, we will show the url, token, and the number of times the url has been visited
 func (a *app) infoHandler(w http.ResponseWriter, r *http.Request) {
 
-	entry, err := a.service.GetUrl(r.Context(), &service.GetUrlInput{
+	entry, err := a.service.GetUrlByToken(r.Context(), &service.GetUrlByTokenInput{
 		Token: r.PathValue("token"),
 	})
 	if err != nil {

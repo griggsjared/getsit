@@ -93,7 +93,7 @@ func SeedUrlEntries(ctx context.Context, tCount int, s *service.Service) {
 
 		genCount++
 
-		s.VisitUrl(ctx, &service.VisitUrlInput{
+		s.VisitUrlByToken(ctx, &service.VisitUrlByTokenInput{
 			Token: e.Token.String(),
 		})
 	}
