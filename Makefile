@@ -84,3 +84,7 @@ migrate/fresh:
 # run the test command to run all tests in the project with coverage.
 test:
 	go test -cover ./internal/service ./internal/entity
+
+# build the web docker container image.
+docker/web/build:
+	docker build -f docker/web/Dockerfile -q .
