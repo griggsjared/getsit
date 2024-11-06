@@ -46,9 +46,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	csrfSecret := os.Getenv("CSRF_TOKEN")
+	csrfSecret := os.Getenv("CSRF_SECRET")
 	if csrfSecret == "" {
-		fmt.Println("CSRF_TOKEN is not set")
+		fmt.Println("CSRF_SECRET is not set")
 		os.Exit(1)
 	}
 
