@@ -4,9 +4,11 @@ WORKDIR /app
 
 COPY . .
 
-RUN apt update && apt install -y npm && npm install -g tailwindcss
+RUN wget https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64 -O tailwindcss
 
-RUN npx tailwindcss -i ./web/main.css -o ./web/public/main.css -c ./web/tailwind.config.js --watch
+RUN chmod +x tailwindcss
+
+RUN ./tailwindcss -i /app/web/main.css -o /app/web/public/main.css -c /app/web/tailwind.config.js
 
 RUN go mod download
 
@@ -14,14 +16,16 @@ RUN go install github.com/a-h/templ/cmd/templ@latest
 
 RUN templ generate
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o ./entrypoint ./cmd/web
+RUN CGO_ENABLED=0 GOOS=linux go build -o ./getsit-web ./cmd/web
 
 FROM gcr.io/distroless/base-debian11 AS build
 
-COPY --chown=nonroot --from=builder /app/entrypoint /app/web/public /
+COPY --from=builder /app/getsit-web /getsit-web
+
+COPY --from=builder /app/web/public /web/public
 
 EXPOSE 8080
 
 USER nonroot:nonroot
 
-CMD ["/entrypoint"]
+CMD ["/getsit-web"]
