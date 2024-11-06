@@ -27,13 +27,13 @@ func main() {
 
 	ctx := context.Background()
 
-	dsn := os.Getenv("DATABASE_DSN")
-	if dsn == "" {
-		fmt.Println("DATABASE_DSN is not set")
+	dbUrl := os.Getenv("DATABASE_URL")
+	if dbUrl == "" {
+		fmt.Println("DATABASE_URL is not set")
 		os.Exit(1)
 	}
 
-	db, err := pgxpool.New(ctx, dsn)
+	db, err := pgxpool.New(ctx, dbUrl)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)

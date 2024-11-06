@@ -60,7 +60,7 @@ dev:
 
 # run the base goose command to manage the database migrations.
 migrate:
-	GOOSE_DRIVER=postgres GOOSE_DBSTRING=${DATABASE_DSN} goose -dir ./database/migrations $(ARGS)
+	GOOSE_DRIVER=postgres GOOSE_DBSTRING=${DATABASE_URL} goose -dir ./database/migrations $(ARGS)
 
 # run the goose status command to check the current migration status.
 migrate/status:
