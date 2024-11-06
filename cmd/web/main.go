@@ -64,6 +64,7 @@ func main() {
 		csrf.CookieName("CSRF-TOKEN"),
 		csrf.RequestHeader("X-CSRF-TOKEN"),
 		csrf.FieldName("csrf_token"),
+		csrf.ErrorHandler(http.HandlerFunc(app.tokenMismatchHandler)),
 	)
 
 	mux := http.NewServeMux()

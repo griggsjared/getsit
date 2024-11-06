@@ -110,9 +110,28 @@ func (a *app) infoHandler(w http.ResponseWriter, r *http.Request) {
 // can be used to show return a 404 status from within other handlers
 func (a *app) notFoundHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotFound)
-	err := template.NotFound().Render(r.Context(), w)
+	err := template.ServerError(template.ServerErrorViewModel{
+		Code: http.StatusNotFound,
+		Msg:  "404: Page not found",
+		Desc: "Sorry we could not find what you were looking for.",
+	}).Render(r.Context(), w)
 	if err != nil {
 		http.Error(w, "Failed to render 404 page", http.StatusInternalServerError)
+		return
+	}
+}
+
+// tokenMismatchHandler will show a 403 error message
+// this is the handler for when a csrf token mismatch occurs
+func (a *app) tokenMismatchHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusForbidden)
+	err := template.ServerError(template.ServerErrorViewModel{
+		Code: http.StatusNotFound,
+		Msg:  "Invalid Request",
+		Desc: "Sorry, the request was invalid. Please go back and try again.",
+	}).Render(r.Context(), w)
+	if err != nil {
+		http.Error(w, "Failed to render the token mismatch page", http.StatusInternalServerError)
 		return
 	}
 }

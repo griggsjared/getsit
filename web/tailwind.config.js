@@ -12,13 +12,13 @@ module.exports = {
       white: '#fff',
       green: {
         DEFAULT: '#7e9142',
-        light: '#b0cf78',
+        light: '#a0cf78',
         dark: '#7e9142',
       },
       gray: {
         DEFAULT: '#333333',
         dark: '#1a1a1a',
-        light: '#f2f2f2',
+        light: '#f0f0f0',
       },
     },
     fontFamily: {

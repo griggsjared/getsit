@@ -64,13 +64,21 @@ templ Info(vm InfoViewModel) {
 	}
 }
 
-templ NotFound() {
-	@layout("404: Not Found") {
+type ServerErrorViewModel struct {
+	Code int
+	Msg  string
+	Desc string
+}
+
+templ ServerError(vm ServerErrorViewModel) {
+	@layout(vm.Msg) {
 		<div class="max-w-2xl mx-auto space-y-6">
 			@header(headerConfig{logoSize: logoSizeLarge})
 			<div>
-				<div class="text-2xl font-bold">404: Not Found</div>
-				<div class="text-xl">Sorry we could not find what you were looking for.</div>
+				<div class="text-2xl font-bold">{ vm.Msg }</div>
+				if vm.Desc != "" {
+					<div class="text-xl">{ vm.Desc }</div>
+				}
 			</div>
 		</div>
 	}
