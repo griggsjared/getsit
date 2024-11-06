@@ -18,8 +18,6 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o ./entrypoint ./cmd/web
 
 FROM gcr.io/distroless/base-debian11 AS build
 
-WORKDIR /
-
 COPY --chown=nonroot --from=builder /app/entrypoint /app/web/public /
 
 EXPOSE 8080
