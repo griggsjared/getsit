@@ -8,7 +8,7 @@ RUN wget https://github.com/tailwindlabs/tailwindcss/releases/latest/download/ta
 
 RUN chmod +x tailwindcss
 
-RUN ./tailwindcss -i /app/web/main.css -o /app/web/public/main.css -c /app/web/tailwind.config.js
+RUN ./tailwindcss -i /app/web/main.css -o /app/web/public/main.css -c /app/web/tailwind.config.js --minify
 
 RUN go mod download
 
