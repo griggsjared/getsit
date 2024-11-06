@@ -10,14 +10,20 @@ RUN npx tailwindcss -i ./web/main.css -o ./web/public/main.css -c ./web/tailwind
 
 RUN go mod download
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o ./getsit-web ./cmd/web
+RUN go install github.com/a-h/templ/cmd/templ@latest
+
+RUN templ generate
+
+RUN CGO_ENABLED=0 GOOS=linux go build -o /entrypoint ./cmd/web
 
 FROM gcr.io/distroless/base-debian11 AS build
 
-EXPOSE 8080
+WORKDIR /
 
-COPY --from=builder /app/getsit-web /app/web/public /
+COPY --chown=nonroot --from=builder /entrypoint /app/web/public /
+
+EXPOSE 8080
 
 USER nonroot:nonroot
 
-CMD ["/getsit-web"]
+CMD ["/entrypoint"]
