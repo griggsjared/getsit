@@ -89,7 +89,7 @@ func main() {
 		serverAddr = host + serverAddr
 	}
 
-	http.ListenAndServe(serverAddr, app.middlewareStack(mux, app.loggerMiddleware))
+	fmt.Println("Starting server on", serverAddr)
 
-	fmt.Println("Server started on", serverAddr)
+	http.ListenAndServe(serverAddr, app.middlewareStack(mux, app.loggerMiddleware))
 }
