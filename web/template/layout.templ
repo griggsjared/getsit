@@ -42,7 +42,7 @@ templ header(c headerConfig) {
 templ message(message string) {
 	<div id="message">
 		if message != "" {
-			<div class="p-2 mb-2 text-center bg-green-100 border border-green-200 rounded">{ message }</div>
+			<div class="py-1 px-2 border border-green-dark border-l-2 font-bold">{ message }</div>
 		}
 	</div>
 }
@@ -50,7 +50,7 @@ templ message(message string) {
 templ errors(errors map[string]string) {
 	<div id="errors">
 		if len(errors) > 0 {
-			<ul class="p-2 mb-2 text-center border rounded">
+			<ul class="py-1 px-2 border border-red border-l-2 font-bold">
 				for _ , value := range errors {
 					<li>{ value }</li>
 				}
@@ -66,7 +66,7 @@ type buttonConfig struct {
 	href       string
 }
 
-const buttonBaseClassName string = "py-1.5 px-6 text-center bg-green-dark border border-gray-light rounded hover:bg-green-light font-bold text-gray-light hover:text-gray uppercase text-lg"
+const buttonBaseClassName string = "py-1.5 px-6 text-center bg-green-dark border border-green-dark rounded hover:bg-green-light font-bold text-gray-light hover:text-gray uppercase text-lg"
 
 templ button(c buttonConfig) {
 	if c.href != "" {

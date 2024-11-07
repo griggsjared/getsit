@@ -12,28 +12,24 @@ templ Homepage(vm HomepageViewModel) {
 	@layout("") {
 		<div class="max-w-2xl mx-auto space-y-12">
 			@header(headerConfig{logoSize: logoSizeLarge})
-			<div>
+			<div class="space-y-4">
 				@message(vm.Message)
 				@errors(vm.Errors)
-				<form action="/create" method="post">
-					<input type="hidden" name="csrf_token" value={ vm.CsrfToken }/>
-					<div class="flex justify-start items-center gap-2" novalidate>
-						<input type="url" name="url" class="w-full p-2 bg-gray-lightest border border-green-dark rounded" placeholder="Enter URL"/>
-						@button(buttonConfig{text: "Get It", buttonType: "submit", className: "flex-shrink-0"})
-					</div>
-				</form>
-				<div class="space-y-2">
-					<div class="text-xl font-bold flex justify-start items-center gap-1 inline-flex">
+				<div class="p-2 rounded bg-black/15">
+					<form action="/create" method="post">
+						<input type="hidden" name="csrf_token" value={ vm.CsrfToken }/>
+						<div class="flex justify-start items-center gap-2" novalidate>
+							<input type="url" name="url" class="w-full p-2 bg-gray-lightest border border-green-dark rounded" placeholder="Enter URL"/>
+							@button(buttonConfig{text: "Get It", buttonType: "submit", className: "flex-shrink-0"})
+						</div>
+					</form>
+				</div>
+				<div class="space-y-2 py-4">
+					<div class="text-2xl font-bold flex justify-start items-end gap-1 inline-flex">
 						Welcome to
 						@logo(logoConfig{size: logoSizeSmall})
 					</div>
-					<div class="font-medium">Usage:</div>
-					<ol class="list-none">
-						<li>To create a new short url, send a POST request to /create with the url parameter</li>
-						<li>To get information about a short url, send a GET request to /i/{ "{token}" }</li>
-						<li>To redirect to a short url, send a GET request to /{ "{token}" }</li>
-						<li>Repeat at step 1 to create more short urls.</li>
-					</ol>
+					<p>Enter a url above to get a shorter version that you can easily share with others.</p>
 				</div>
 			</div>
 		</div>
