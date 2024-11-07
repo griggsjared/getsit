@@ -42,7 +42,7 @@ templ header(c headerConfig) {
 templ message(message string) {
 	<div id="message">
 		if message != "" {
-			<div class="py-1 px-2 border border-green-dark border-l-2 font-bold">{ message }</div>
+			<div class="py-1 px-2 border border-green-dark border-l-2 font-bold first-letter:uppercase">{ message }</div>
 		}
 	</div>
 }
@@ -52,7 +52,7 @@ templ errors(errors map[string]string) {
 		if len(errors) > 0 {
 			<ul class="py-1 px-2 border border-red border-l-2 font-bold">
 				for _ , value := range errors {
-					<li>{ value }</li>
+					<li class="first-letter:uppercase">{ value }</li>
 				}
 			</ul>
 		}
