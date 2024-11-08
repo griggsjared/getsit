@@ -12,11 +12,7 @@ module.exports = {
       black: '#000',
       white: '#fff',
       red: 'rgb(var(--color-red) / <alpha-value>)',
-      green: {
-        DEFAULT: 'rgb(var(--color-green) / <alpha-value>)',
-        light: 'rgb(var(--color-green-light) / <alpha-value>)',
-        dark: 'rgb(var(--color-green-dark) / <alpha-value>)',
-      },
+      green: 'rgb(var(--color-green) / <alpha-value>)',
       gray: {
         DEFAULT: 'rgb(var(--color-gray) / <alpha-value>)',
         light: 'rgb(var(--color-gray-light) / <alpha-value>)',
