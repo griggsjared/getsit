@@ -4,22 +4,24 @@ templ layout(title string) {
 	<!DOCTYPE html>
 	<html lang="en" class="h-full">
 		<head>
-			<meta charset="utf-8"/>
-			<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-			<link rel="preconnect" href="https://fonts.googleapis.com"/>
-			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-			<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet"/>
-			<link rel="stylesheet" href={ "/assets/main.css?" + assetVersion }/>
 			<title>
 				if title != "" {
 					{ title } -
 				}
 				it.getsit - it makes your URLs... shorter
 			</title>
+			<meta charset="utf-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<meta name="description" content="it.getsit - it makes your URLs... shorter"/>
+			<link rel="preconnect" href="https://fonts.googleapis.com"/>
+			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+			<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet"/>
+			<link rel="stylesheet" href={ "/assets/main.css?" + assetVersion }/>
+			<link rel="icon" type="image/png" sizes="32x32" href={ "/assets/favicon.png?" + assetVersion }/>
 			<script>let FF_FOUC_FIX;</script>
 		</head>
-		<body class="h-full w-full">
-			<div class="h-full p-4 antialiased sm:p-10 text-gray bg-gray-light">
+		<body class="h-full w-full dark">
+			<div class="h-full p-4 antialiased sm:p-10 text-foreground bg-background">
 				{ children... }
 			</div>
 		</body>
@@ -35,14 +37,14 @@ templ header(c headerConfig) {
 		<a href="/" class="block">
 			@logo(logoConfig{size: c.logoSize, hasHoverStyles: true})
 		</a>
-		<div class="text-gray text-xl font-bold">it makes your URLs... shorter</div>
+		<div class="text-xl font-bold">it makes your URLs... shorter</div>
 	</header>
 }
 
 templ message(message string) {
 	<div id="message">
 		if message != "" {
-			<div class="py-1 px-2 border border-green-dark border-l-2 font-bold first-letter:uppercase">{ message }</div>
+			<div class="py-1 px-2 border border-success border-l-2 font-bold first-letter:uppercase">{ message }</div>
 		}
 	</div>
 }
@@ -50,7 +52,7 @@ templ message(message string) {
 templ errors(errors map[string]string) {
 	<div id="errors">
 		if len(errors) > 0 {
-			<ul class="py-1 px-2 border border-red border-l-2 font-bold">
+			<ul class="py-1 px-2 border border-error border-l-2 font-bold">
 				for _ , value := range errors {
 					<li class="first-letter:uppercase">{ value }</li>
 				}

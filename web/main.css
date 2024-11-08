@@ -1,3 +1,31 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    :root {
+        --color-white: /* #ffffff */ 255 255 255;
+        --color-black: /* #000000 */ 0 0 0;
+
+        --color-gray: /* ##333333 */ 51 51 51;
+        --color-gray-light: /* #f0f0f0 */ 240 240 240;
+        --color-gray-dark: /* #1a1a1a */ 26 26 26;
+
+        --color-red: /* #d0454c */ 208 69 76;
+
+        --color-green: /* #f05800 */ 240 88 0;
+        --color-green-light: /* #a0cf78 */ 160 207 120;
+        --color-green-dark: /* #7e9142 */ 126 145 66;
+
+        --color-success : var(--color-green);
+        --color-error : var(--color-red);
+
+        --color-background: var(--color-gray-light);
+        --color-foreground: var(--color-gray-dark);
+    }
+
+    .dark {
+        --color-background: var(--color-gray);
+        --color-foreground: var(--color-gray-light);
+    }
+}

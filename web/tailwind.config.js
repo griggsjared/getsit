@@ -4,23 +4,28 @@ module.exports = {
   content: [
     './web/template/**/*.templ',
   ],
+  darkMode: 'selector',
   theme: {
     colors: {
       transparent: 'transparent',
       current: 'currentColor',
       black: '#000',
       white: '#fff',
-      red: '#d0454c',
+      red: 'rgb(var(--color-red) / <alpha-value>)',
       green: {
-        DEFAULT: '#7e9142',
-        light: '#a0cf78',
-        dark: '#7e9142',
+        DEFAULT: 'rgb(var(--color-green) / <alpha-value>)',
+        light: 'rgb(var(--color-green-light) / <alpha-value>)',
+        dark: 'rgb(var(--color-green-dark) / <alpha-value>)',
       },
       gray: {
-        DEFAULT: '#333333',
-        dark: '#1a1a1a',
-        light: '#f0f0f0',
+        DEFAULT: 'rgb(var(--color-gray) / <alpha-value>)',
+        light: 'rgb(var(--color-gray-light) / <alpha-value>)',
+        dark: 'rgb(var(--color-gray-dark) / <alpha-value>)',
       },
+      background: 'rgb(var(--color-background) / <alpha-value>)',
+      foreground: 'rgb(var(--color-foreground) / <alpha-value>)',
+      error: 'rgb(var(--color-error) / <alpha-value>)',
+      success: 'rgb(var(--color-success) / <alpha-value>)',
     },
     fontFamily: {
       sans: ['Figtree', 'sans-serif'],

@@ -16,7 +16,7 @@ type logoConfig struct {
 
 templ logo(c logoConfig) {
 	<h1
-		class={ "font-medium text-gray tracking-tighter flex justify-start items-center",
+		class={ "font-medium text-gray-dark dark:text-gray-light tracking-tighter flex justify-start items-center",
 		templ.KV("text-2xl", c.size == logoSizeSmall),
 		templ.KV("text-6xl", c.size == logoSizeNormal),
 		templ.KV("text-8xl", c.size == logoSizeLarge),
