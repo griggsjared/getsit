@@ -25,7 +25,8 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/", app.rootHandler)
+	mux.HandleFunc("GET /", app.rootHandler)
+	mux.HandleFunc("GET /healthz", app.healthzHandler)
 
 	fmt.Printf("Starting server on %s\n", serverAddr)
 

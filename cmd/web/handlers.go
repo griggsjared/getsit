@@ -135,3 +135,9 @@ func (a *app) tokenMismatchHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+// healthzHandler is the handler for the healthz path of the web application.
+func (a *app) healthzHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("ok"))
+}

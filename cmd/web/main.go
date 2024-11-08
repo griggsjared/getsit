@@ -74,6 +74,7 @@ func main() {
 	mux.HandleFunc("POST /create", app.middlewareStackFunc(app.createHandler, csrfMiddleware))
 	mux.HandleFunc("GET /i/{token}", app.infoHandler)
 	mux.HandleFunc("GET /{token}", app.redirectHandler)
+	mux.HandleFunc("GET /healthz", app.healthzHandler)
 	mux.HandleFunc("/", app.notFoundHandler)
 
 	mux.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(web.AssetsFS())))
