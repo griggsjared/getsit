@@ -102,4 +102,6 @@ test:
 docker/web/build:
 	docker build -f docker/web/Dockerfile -q .
 
-
+# run the web docker container image.
+docker/web/run:
+	docker run -it -p ${PORT}:${PORT} --env-file=.env  --rm $(shell docker build -f docker/web/Dockerfile -q .)
