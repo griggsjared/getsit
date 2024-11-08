@@ -25,9 +25,7 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, %q", r.URL.Path)
-	})
+	mux.HandleFunc("/", app.rootHandler)
 
 	fmt.Printf("Starting server on %s\n", serverAddr)
 

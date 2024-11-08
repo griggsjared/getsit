@@ -22,8 +22,6 @@ FROM gcr.io/distroless/base-debian11 AS build
 
 COPY --from=builder /app/getsit-web /getsit-web
 
-COPY --from=builder /app/web/public /web/public
-
 EXPOSE 8080
 
 USER nonroot:nonroot

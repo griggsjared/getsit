@@ -14,6 +14,7 @@ import (
 
 	"github.com/griggsjared/getsit/internal/repository"
 	"github.com/griggsjared/getsit/internal/service"
+	"github.com/griggsjared/getsit/web"
 )
 
 type app struct {
@@ -75,8 +76,7 @@ func main() {
 	mux.HandleFunc("GET /{token}", app.redirectHandler)
 	mux.HandleFunc("/", app.notFoundHandler)
 
-	fileServer := http.FileServer(http.Dir("web/public"))
-	mux.Handle("/assets/", http.StripPrefix("/assets/", fileServer))
+	mux.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(web.AssetsFS())))
 
 	port := os.Getenv("PORT")
 	if port == "" {
