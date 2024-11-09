@@ -34,9 +34,9 @@ templ layout(title string) {
 			<script>let FF_FOUC_FIX;</script>
 		</head>
 		<body class={ "h-full w-full", colorMode(ctx) }>
-			<div class="h-full px-4 pt-4 antialiased sm:px-10 sm:pt-4 text-foreground bg-background flex flex-col">
+			<div class="h-full pt-4 antialiased  text-foreground bg-background flex flex-col">
 				@header(headerConfig{logoSize: logoSizeNormal})
-				<div class="max-w-2xl mx-auto flex-grow py-12 w-full">
+				<div class="max-w-2xl mx-auto flex-grow py-12 w-full px-4">
 					{ children... }
 				</div>
 				@footer()
@@ -57,7 +57,7 @@ type headerConfig struct {
 }
 
 templ header(c headerConfig) {
-	<header class="max-w-2xl mx-auto pace-y-2 w-full">
+	<header class="max-w-2xl mx-auto pace-y-2 w-full px-4">
 		<a href="/" class="block">
 			@logo(logoConfig{size: c.logoSize, hasHoverStyles: true})
 		</a>
@@ -66,20 +66,22 @@ templ header(c headerConfig) {
 }
 
 templ footer() {
-	<footer class="max-w-2xl mx-auto flex justify-between items-center w-full p-2">
-		<div class="text-gray-dark dark:text-gray-light flex gap-2 items-center">
-			<a href="/" class="block">
-				@logo(logoConfig{size: logoSizeSmall})
-			</a>
-			<span>&copy; 2024</span>
+	<footer class="bg-gray-dark/15 dark:bg-gray-light/10 w-full">
+		<div class="max-w-2xl mx-auto flex justify-between items-center w-full py-2 px-4">
+			<div class="text-gray-dark dark:text-gray-light flex gap-2 items-center">
+				<a href="/" class="block">
+					@logo(logoConfig{size: logoSizeSmall})
+				</a>
+				<span class="font-bold">&copy; 2024</span>
+			</div>
+			<button type="button" id="color-mode" class="hover:text-green font-bold">
+				if colorMode(ctx) == "light" {
+					Dark Mode
+				} else {
+					Light Mode
+				}
+			</button>
 		</div>
-		<button type="button" id="color-mode" class="hover:text-green">
-			if colorMode(ctx) == "light" {
-				Dark Mode
-			} else {
-				Light Mode
-			}
-		</button>
 	</footer>
 }
 
