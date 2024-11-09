@@ -42,7 +42,7 @@ type InfoViewModel struct {
 templ Info(vm InfoViewModel) {
 	@layout(vm.Token) {
 		<div class="space-y-4">
-			<div class="py-2 px-4 rounded bg-gray-dark/15 dark:bg-gray-light/10 text-2xl">
+			<div class="py-2 px-4 rounded bg-gray-dark/15 dark:bg-gray-light/10 text-2xl font-bold">
 				<a href={ templ.SafeURL(vm.ShortUrlWithProto) }>{ vm.ShortUrl }</a>
 			</div>
 			<div>
