@@ -66,7 +66,7 @@ templ header(c headerConfig) {
 }
 
 templ footer() {
-	<footer class="bg-gray-dark/15 dark:bg-gray-light/10 w-full">
+	<footer class="bg-gray-dark/15 dark:bg-gray-dark w-full dark">
 		<div class="max-w-2xl mx-auto flex justify-between items-center w-full py-2 px-4">
 			<div class="text-gray-dark dark:text-gray-light flex gap-2 items-center">
 				<a href="/" class="block">
@@ -74,7 +74,7 @@ templ footer() {
 				</a>
 				<span class="font-bold">&copy; 2024</span>
 			</div>
-			<button type="button" id="color-mode" class="hover:text-green font-bold">
+			<button type="button" id="color-mode" class="hover:text-green font-bold text-gray-light">
 				if colorMode(ctx) == "light" {
 					Dark Mode
 				} else {
