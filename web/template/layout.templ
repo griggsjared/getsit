@@ -112,7 +112,7 @@ type buttonConfig struct {
 	href       string
 }
 
-const buttonBaseClassName string = "py-1.5 px-6 text-center border border-green bg-green hover:bg-green/50 text-gray-dark hover:text-gray-light font-bold uppercase text-lg rounded"
+const buttonBaseClassName string = "py-1.5 px-6 text-center border border-green bg-green hover:bg-green/50 text-gray-light hover:text-gray-dark dark:hover:text-gray uppercase text-lg rounded font-black text-xl"
 
 templ button(c buttonConfig) {
 	if c.href != "" {

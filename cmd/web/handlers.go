@@ -93,7 +93,6 @@ func (a *app) infoHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//is ssl or not
 	proto := "http"
 	if r.TLS != nil {
 		proto = "https"
