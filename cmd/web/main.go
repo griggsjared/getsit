@@ -70,9 +70,9 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /{$}", app.middlewareStackFunc(app.homepageHandler, csrfMiddleware))
+	mux.HandleFunc("GET /{$}", app.middlewareStackFunc(app.homepageHandler, csrfMiddleware, app.templateColorMiddleware))
 	mux.HandleFunc("POST /create", app.middlewareStackFunc(app.createHandler, csrfMiddleware))
-	mux.HandleFunc("GET /i/{token}", app.infoHandler)
+	mux.HandleFunc("GET /i/{token}", app.middlewareStackFunc(app.infoHandler, app.templateColorMiddleware))
 	mux.HandleFunc("GET /{token}", app.redirectHandler)
 	mux.HandleFunc("GET /healthz", app.healthzHandler)
 	mux.HandleFunc("/", app.notFoundHandler)

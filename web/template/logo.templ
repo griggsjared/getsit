@@ -5,7 +5,6 @@ type logoSize string
 const (
 	logoSizeSmall  logoSize = "small"
 	logoSizeNormal logoSize = "normal"
-	logoSizeLarge  logoSize = "large"
 )
 
 type logoConfig struct {
@@ -15,11 +14,10 @@ type logoConfig struct {
 }
 
 templ logo(c logoConfig) {
-	<h1
+	<span
 		class={ "font-medium text-gray-dark dark:text-gray-light tracking-tighter flex justify-start items-center",
-		templ.KV("text-2xl", c.size == logoSizeSmall),
-		templ.KV("text-6xl", c.size == logoSizeNormal),
-		templ.KV("text-8xl", c.size == logoSizeLarge),
+		templ.KV("text-xl", c.size == logoSizeSmall),
+		templ.KV("text-6xl sm:text-8xl", c.size == logoSizeNormal),
 		templ.KV("hover:opacity-50", c.hasHoverStyles),
 		c.className }
 	>
@@ -32,5 +30,5 @@ templ logo(c logoConfig) {
 		<span class="font-black">
 			it
 		</span>
-	</h1>
+	</span>
 }

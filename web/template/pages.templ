@@ -11,7 +11,6 @@ type HomepageViewModel struct {
 templ Homepage(vm HomepageViewModel) {
 	@layout("") {
 		<div class="max-w-2xl mx-auto space-y-12">
-			@header(headerConfig{logoSize: logoSizeLarge})
 			<div class="space-y-4">
 				@message(vm.Message)
 				@errors(vm.Errors)
@@ -25,10 +24,6 @@ templ Homepage(vm HomepageViewModel) {
 					</form>
 				</div>
 				<div class="space-y-2 py-4">
-					<div class="text-2xl font-bold flex justify-start items-end gap-1 inline-flex">
-						Welcome to
-						@logo(logoConfig{size: logoSizeSmall})
-					</div>
 					<p>Enter a url above to get a shorter version that you can easily share with others.</p>
 				</div>
 			</div>
@@ -45,11 +40,10 @@ type InfoViewModel struct {
 
 templ Info(vm InfoViewModel) {
 	@layout(vm.Token) {
-		<div class="max-w-2xl mx-auto space-y-6">
-			@header(headerConfig{logoSize: logoSizeNormal})
+		<div class="space-y-4">
 			<div>
 				<div class="text-2xl font-bold">Info</div>
-				<div>Short URL: <a href={ templ.SafeURL("http://" + vm.ShortUrl) }>{ vm.ShortUrl }</a></div>
+				<div>Short URL: <a href={ templ.SafeURL("https://" + vm.ShortUrl) }>{ "https://" + vm.ShortUrl }</a></div>
 				<div>Full Url: { vm.Url }</div>
 				<div>Visit Count: { strconv.Itoa(vm.VisitCount) }</div>
 			</div>
@@ -68,8 +62,7 @@ type ServerErrorViewModel struct {
 
 templ ServerError(vm ServerErrorViewModel) {
 	@layout(vm.Msg) {
-		<div class="max-w-2xl mx-auto space-y-6">
-			@header(headerConfig{logoSize: logoSizeLarge})
+		<div class="space-y-4">
 			<div>
 				<div class="text-2xl font-bold">{ vm.Msg }</div>
 				if vm.Desc != "" {

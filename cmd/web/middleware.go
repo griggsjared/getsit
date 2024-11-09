@@ -1,8 +1,11 @@
 package main
 
 import (
+	"context"
 	"net/http"
 	"time"
+
+	"github.com/griggsjared/getsit/web/template"
 )
 
 // middleware is a type that wraps an http.Handler and returns a new http.Handler
@@ -32,5 +35,19 @@ func (a *app) loggerMiddleware(next http.Handler) http.Handler {
 			"path", r.URL.Path,
 			"duration", time.Since(start),
 		)
+	})
+}
+
+// templateColorMiddleware will set the color-mode context value based on the color-mode cookie
+func (a *app) templateColorMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		mode := "dark"
+		if colorModeCookie, err := r.Cookie("color-mode"); err == nil {
+			if colorModeCookie.Value == "light" {
+				mode = "light"
+			}
+		}
+		ctx := context.WithValue(r.Context(), template.ColorModeCtxKey, mode)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }

@@ -1,5 +1,18 @@
 package template
 
+import "context"
+
+type colorModeCtxKey string
+
+var ColorModeCtxKey = colorModeCtxKey("color-mode")
+
+func colorMode(ctx context.Context) string {
+	if mode, ok := ctx.Value(ColorModeCtxKey).(string); ok {
+		return mode
+	}
+	return "dark"
+}
+
 templ layout(title string) {
 	<!DOCTYPE html>
 	<html lang="en" class="h-full">
@@ -20,10 +33,21 @@ templ layout(title string) {
 			<link rel="icon" type="image/png" sizes="32x32" href={ "/assets/favicon.png?" + assetVersion }/>
 			<script>let FF_FOUC_FIX;</script>
 		</head>
-		<body class="h-full w-full dark">
-			<div class="h-full p-4 antialiased sm:p-10 text-foreground bg-background">
-				{ children... }
+		<body class={ "h-full w-full", colorMode(ctx) }>
+			<div class="h-full px-4 pt-4 antialiased sm:px-10 sm:pt-4 text-foreground bg-background flex flex-col">
+				@header(headerConfig{logoSize: logoSizeNormal})
+				<div class="max-w-2xl mx-auto flex-grow py-12 w-full">
+					{ children... }
+				</div>
+				@footer()
 			</div>
+			<script>
+				document.getElementById("color-mode").addEventListener("click", () => {
+					document.body.classList.toggle("dark");
+					document.getElementById("color-mode").innerText = document.body.classList.contains("dark") ? "Light Mode" : "Dark Mode";
+					document.cookie = "color-mode=" + (document.body.classList.contains("dark") ? 'dark' : 'light') + "; expires=Thu, 31 Dec 2099 23:59:59 UTC; path=/; SameSite=Lax";
+				});
+			</script>
 		</body>
 	</html>
 }
@@ -33,7 +57,7 @@ type headerConfig struct {
 }
 
 templ header(c headerConfig) {
-	<header class="space-y-2">
+	<header class="max-w-2xl mx-auto pace-y-2 w-full">
 		<a href="/" class="block">
 			@logo(logoConfig{size: c.logoSize, hasHoverStyles: true})
 		</a>
@@ -41,10 +65,28 @@ templ header(c headerConfig) {
 	</header>
 }
 
+templ footer() {
+	<footer class="max-w-2xl mx-auto flex justify-between items-center w-full p-2">
+		<div class="text-gray-dark dark:text-gray-light flex gap-2 items-center">
+			<a href="/" class="block">
+				@logo(logoConfig{size: logoSizeSmall})
+			</a>
+			<span>&copy; 2024</span>
+		</div>
+		<button type="button" id="color-mode" class="hover:text-green">
+			if colorMode(ctx) == "light" {
+				Dark Mode
+			} else {
+				Light Mode
+			}
+		</button>
+	</footer>
+}
+
 templ message(message string) {
 	<div id="message">
 		if message != "" {
-			<div class="py-1 px-2 border border-success border-l-2 font-bold first-letter:uppercase">{ message }</div>
+			<div class="py-1 px-2 border-l border-error border-l-4 font-bold first-letter:uppercase bg-gray-dark/15 dark:bg-gray-light/10">{ message }</div>
 		}
 	</div>
 }
@@ -52,7 +94,7 @@ templ message(message string) {
 templ errors(errors map[string]string) {
 	<div id="errors">
 		if len(errors) > 0 {
-			<ul class="py-1 px-2 border border-error border-l-2 font-bold">
+			<ul class="py-1 px-2 border-l border-error border-l-4 font-bold bg-gray-dark/15 dark:bg-gray-light/10 rounded">
 				for _ , value := range errors {
 					<li class="first-letter:uppercase">{ value }</li>
 				}
