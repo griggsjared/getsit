@@ -32,23 +32,31 @@ templ Homepage(vm HomepageViewModel) {
 }
 
 type InfoViewModel struct {
-	ShortUrl   string
-	Url        string
-	Token      string
-	VisitCount int
+	ShortUrl          string
+	ShortUrlWithProto string
+	Url               string
+	Token             string
+	VisitCount        int
 }
 
 templ Info(vm InfoViewModel) {
 	@layout(vm.Token) {
 		<div class="space-y-4">
-			<div>
-				<div class="text-2xl font-bold">Info</div>
-				<div>Short URL: <a href={ templ.SafeURL("https://" + vm.ShortUrl) }>{ "https://" + vm.ShortUrl }</a></div>
-				<div>Full Url: { vm.Url }</div>
-				<div>Visit Count: { strconv.Itoa(vm.VisitCount) }</div>
+			<div class="py-2 px-4 rounded bg-gray-dark/15 dark:bg-gray-light/10 text-2xl">
+				<a href={ templ.SafeURL(vm.ShortUrlWithProto) }>{ vm.ShortUrl }</a>
 			</div>
 			<div>
-				@button(buttonConfig{text: "Shorten another URL", className: "w-full", href: "/"})
+				<div>{ vm.Url }</div>
+				<div>
+					if vm.VisitCount != 1 {
+						{ strconv.Itoa(vm.VisitCount) } Visits
+					} else {
+						{ strconv.Itoa(vm.VisitCount) } Visit
+					}
+				</div>
+			</div>
+			<div>
+				@button(buttonConfig{text: "Get It Again", className: "w-full", href: "/"})
 			</div>
 		</div>
 	}

@@ -75,7 +75,7 @@ func main() {
 	mux.HandleFunc("GET /i/{token}", app.middlewareStackFunc(app.infoHandler, app.templateColorMiddleware))
 	mux.HandleFunc("GET /{token}", app.redirectHandler)
 	mux.HandleFunc("GET /healthz", app.healthzHandler)
-	mux.HandleFunc("/", app.notFoundHandler)
+	mux.HandleFunc("/", app.middlewareStackFunc(app.notFoundHandler, app.templateColorMiddleware))
 
 	mux.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(web.AssetsFS())))
 

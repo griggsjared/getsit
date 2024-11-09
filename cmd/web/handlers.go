@@ -93,11 +93,18 @@ func (a *app) infoHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//is ssl or not
+	proto := "http"
+	if r.TLS != nil {
+		proto = "https"
+	}
+
 	err = template.Info(template.InfoViewModel{
-		ShortUrl:   fmt.Sprintf("%s/%s", r.Host, entry.Token),
-		Url:        entry.Url.String(),
-		Token:      entry.Token.String(),
-		VisitCount: entry.VisitCount,
+		ShortUrl:          fmt.Sprintf("%s/%s", r.Host, entry.Token),
+		ShortUrlWithProto: fmt.Sprintf("%s://%s/%s", proto, r.Host, entry.Token),
+		Url:               entry.Url.String(),
+		Token:             entry.Token.String(),
+		VisitCount:        entry.VisitCount,
 	}).Render(r.Context(), w)
 	if err != nil {
 		http.Error(w, "Failed to render information page", http.StatusInternalServerError)
