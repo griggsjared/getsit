@@ -25,13 +25,13 @@ templ Homepage(vm HomepageViewModel) {
 				<form action="/create" method="post" novalidate>
 					<input type="hidden" name="csrf_token" value={ vm.CsrfToken }/>
 					<div class="flex justify-start items-center gap-2">
-						<input type="url" name="url" value={ getFlashInput(vm.Inputs, "url", "") } class="w-full p-2 bg-gray-light border border-green rounded text-gray" placeholder="Enter URL"/>
+						<input type="url" name="url" value={ getFlashInput(vm.Inputs, "url", "") } class="w-full p-2 bg-gray-light border border-gray-light rounded text-gray focus:border-green focus:ring-green" placeholder="Enter URL"/>
 						@button(buttonConfig{text: "Get It", buttonType: "submit", className: "flex-shrink-0"})
 					</div>
 				</form>
 			</div>
 			<div class="space-y-2 py-4">
-				<p>Enter a url above to get a shorter version that you can easily share with others.</p>
+				<p>Enter a url above to get a shorter version that you can easily share with others. Unless it was already really short, in which case it will probably be longer.</p>
 			</div>
 		</div>
 	}
