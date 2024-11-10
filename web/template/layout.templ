@@ -36,7 +36,7 @@ templ layout(title string) {
 		<body class={ "h-full w-full", colorMode(ctx) }>
 			<div class="h-full pt-4 antialiased  text-foreground bg-background flex flex-col">
 				@header(headerConfig{logoSize: logoSizeNormal})
-				<div class="max-w-2xl mx-auto flex-grow py-12 w-full px-4">
+				<div class="max-w-2xl mx-auto flex-grow py-8 sm:py-12 w-full px-4">
 					{ children... }
 				</div>
 				@footer()
@@ -50,7 +50,7 @@ type headerConfig struct {
 }
 
 templ header(c headerConfig) {
-	<header class="max-w-2xl mx-auto pace-y-2 w-full px-4">
+	<header class="max-w-2xl mx-auto space-y-1.5 w-full px-4">
 		<a href="/" class="block">
 			@logo(logoConfig{size: c.logoSize, hasHoverStyles: true})
 		</a>
