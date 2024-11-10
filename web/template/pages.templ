@@ -2,10 +2,18 @@ package template
 
 import "strconv"
 
+func getFlashInput(inputs map[string]string, key string, def string) string {
+	if val, ok := inputs[key]; ok {
+		return val
+	}
+	return def
+}
+
 type HomepageViewModel struct {
 	CsrfToken string
 	Message   string
 	Errors    map[string]string
+	Inputs    map[string]string
 }
 
 templ Homepage(vm HomepageViewModel) {
@@ -18,7 +26,7 @@ templ Homepage(vm HomepageViewModel) {
 					<form action="/create" method="post" novalidate>
 						<input type="hidden" name="csrf_token" value={ vm.CsrfToken }/>
 						<div class="flex justify-start items-center gap-2">
-							<input type="url" name="url" class="w-full p-2 bg-gray-light border border-green rounded text-gray" placeholder="Enter URL"/>
+							<input type="url" name="url" value={ getFlashInput(vm.Inputs, "url", "") } class="w-full p-2 bg-gray-light border border-green rounded text-gray" placeholder="Enter URL"/>
 							@button(buttonConfig{text: "Get It", buttonType: "submit", className: "flex-shrink-0"})
 						</div>
 					</form>

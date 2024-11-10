@@ -19,6 +19,7 @@ func (a *app) homepageHandler(w http.ResponseWriter, r *http.Request) {
 		CsrfToken: token,
 		Message:   a.getFlashMessage(w, r),
 		Errors:    a.getFlashErrors(w, r),
+		Inputs:    a.getFlashInputs(w, r),
 	}).Render(r.Context(), w)
 	if err != nil {
 		http.Error(w, "Failed to render homepage", http.StatusInternalServerError)
@@ -49,6 +50,7 @@ func (a *app) createHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			a.setFlashErrors(w, r, map[string]string{"error": "Failed to save url"})
 		}
+		a.setFlashInputs(w, r, map[string]string{"url": r.FormValue("url")})
 		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}

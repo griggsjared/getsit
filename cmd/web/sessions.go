@@ -7,9 +7,11 @@ import (
 	"github.com/gorilla/sessions"
 )
 
+const flashSessionName string = "flash-session"
+
 // setFlashMessage sets a flash message in the session
 func (a *app) setFlashMessage(w http.ResponseWriter, r *http.Request, message string) {
-	session, err := a.session.Get(r, "flash-session")
+	session, err := a.session.Get(r, flashSessionName)
 	if err != nil {
 		http.Error(w, "Failed to get session", http.StatusInternalServerError)
 		return
@@ -22,7 +24,7 @@ func (a *app) setFlashMessage(w http.ResponseWriter, r *http.Request, message st
 // getFlashMessage gets a flash message from the session
 func (a *app) getFlashMessage(w http.ResponseWriter, r *http.Request) string {
 
-	session, err := a.session.Get(r, "flash-session")
+	session, err := a.session.Get(r, flashSessionName)
 	if err != nil {
 		http.Error(w, "Failed to get session", http.StatusInternalServerError)
 		return ""
@@ -40,7 +42,7 @@ func (a *app) getFlashMessage(w http.ResponseWriter, r *http.Request) string {
 
 // setFlashErrors sets flash errors in the session
 func (a *app) setFlashErrors(w http.ResponseWriter, r *http.Request, errors map[string]string) {
-	session, err := a.session.Get(r, "flash-session")
+	session, err := a.session.Get(r, flashSessionName)
 	if err != nil {
 		http.Error(w, "Failed to get session", http.StatusInternalServerError)
 		return
@@ -64,7 +66,7 @@ func (a *app) setFlashErrors(w http.ResponseWriter, r *http.Request, errors map[
 // getFlashErrors gets flash errors from the session
 func (a *app) getFlashErrors(w http.ResponseWriter, r *http.Request) map[string]string {
 
-	session, err := a.session.Get(r, "flash-session")
+	session, err := a.session.Get(r, flashSessionName)
 	if err != nil {
 		http.Error(w, "Failed to get session", http.StatusInternalServerError)
 		return nil
@@ -85,4 +87,50 @@ func (a *app) getFlashErrors(w http.ResponseWriter, r *http.Request) map[string]
 	}
 
 	return errors
+}
+
+func (a *app) setFlashInputs(w http.ResponseWriter, r *http.Request, inputs map[string]string) {
+	session, err := a.session.Get(r, flashSessionName)
+	if err != nil {
+		http.Error(w, "Failed to get session", http.StatusInternalServerError)
+		return
+	}
+
+	if inputs == nil {
+		session.Save(r, w)
+		return
+	}
+
+	inputsJson, err := json.Marshal(inputs)
+	if err != nil {
+		http.Error(w, "Failed to encode inputs", http.StatusInternalServerError)
+		return
+	}
+
+	session.AddFlash(string(inputsJson), "inputs")
+	session.Save(r, w)
+}
+
+func (a *app) getFlashInputs(w http.ResponseWriter, r *http.Request) map[string]string {
+	session, err := a.session.Get(r, flashSessionName)
+	if err != nil {
+		http.Error(w, "Failed to get session", http.StatusInternalServerError)
+		return nil
+	}
+
+	defer session.Save(r, w)
+
+	flashes := session.Flashes("inputs")
+	if len(flashes) == 0 {
+		return nil
+	}
+
+	inputs := make(map[string]string)
+	err = json.Unmarshal([]byte(flashes[0].(string)), &inputs)
+	if err != nil {
+		http.Error(w, "Failed to decode inputs", http.StatusInternalServerError)
+		return nil
+	}
+
+	return inputs
 }
