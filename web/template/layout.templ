@@ -41,13 +41,6 @@ templ layout(title string) {
 				</div>
 				@footer()
 			</div>
-			<script>
-				document.getElementById("color-mode").addEventListener("click", () => {
-					document.body.classList.toggle("dark");
-					document.getElementById("color-mode").innerText = document.body.classList.contains("dark") ? "Light Mode" : "Dark Mode";
-					document.cookie = "color-mode=" + (document.body.classList.contains("dark") ? 'dark' : 'light') + "; expires=Thu, 31 Dec 2099 23:59:59 UTC; path=/; SameSite=Lax";
-				});
-			</script>
 		</body>
 	</html>
 }
@@ -66,21 +59,30 @@ templ header(c headerConfig) {
 }
 
 templ footer() {
-	<footer class="bg-gray-dark/15 dark:bg-gray-dark w-full dark">
+	<footer class="bg-gray-dark text-gray-light w-full">
 		<div class="max-w-2xl mx-auto flex justify-between items-center w-full py-2 px-4">
-			<div class="text-gray-dark dark:text-gray-light flex gap-2 items-center">
+			<div class="flex gap-2 items-center">
 				<a href="/" class="block">
-					@logo(logoConfig{size: logoSizeSmall})
+					@logo(logoConfig{size: logoSizeSmall, className: "dark"})
 				</a>
 				<span class="font-bold">&copy; 2024</span>
 			</div>
-			<button type="button" id="color-mode" class="hover:text-green font-bold text-gray-light">
-				if colorMode(ctx) == "light" {
-					Dark Mode
-				} else {
-					Light Mode
-				}
+			<button type="button" id="color-mode" class="hover:text-green font-bold">
+				<div class="gap-2 items-center hidden dark:flex">
+					<span class="hidden sm:inline">Dark Mode</span>
+					@icon("moon", "w-4 h-4")
+				</div>
+				<div class="gap-2 items-center flex dark:hidden">
+					<span class="hidden sm:inline">Light Mode</span>
+					@icon("sun", "w-4 h-4")
+				</div>
 			</button>
+			<script>
+				document.getElementById("color-mode").addEventListener("click", () => {
+					document.body.classList.toggle("dark");
+					document.cookie = "color-mode=" + (document.body.classList.contains("dark") ? 'dark' : 'light') + "; expires=Thu, 31 Dec 2099 23:59:59 UTC; path=/; SameSite=Lax";
+				});
+			</script>
 		</div>
 	</footer>
 }
