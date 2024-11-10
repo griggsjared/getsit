@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"time"
 )
 
 // middleware is a type that wraps an http.Handler and returns a new http.Handler
@@ -19,4 +20,17 @@ func (a *app) middlewareStack(h http.Handler, middlewares ...middleware) http.Ha
 // This is a convenience function that wraps middlewareStack to work with http.HandlerFunc
 func (a *app) middlewareStackFunc(h http.HandlerFunc, middleware ...middleware) http.HandlerFunc {
 	return a.middlewareStack(h, middleware...).ServeHTTP
+}
+
+// loggerMiddleware records the and method of the incoming request and the time taken to process the request
+func (a *app) loggerMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		next.ServeHTTP(w, r)
+		a.logger.Println(
+			"method", r.Method,
+			"path", r.URL.Path,
+			"duration", time.Since(start),
+		)
+	})
 }
