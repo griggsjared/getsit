@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/griggsjared/getsit/internal/entity"
+	"github.com/griggsjared/getsit/internal/url/entity"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )

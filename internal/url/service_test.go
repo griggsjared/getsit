@@ -1,22 +1,22 @@
-package service_test
+package url_test
 
 import (
 	"context"
 	"testing"
 
-	"github.com/griggsjared/getsit/internal/entity"
-	"github.com/griggsjared/getsit/internal/repository"
-	"github.com/griggsjared/getsit/internal/service"
+	"github.com/griggsjared/getsit/internal/url"
+	"github.com/griggsjared/getsit/internal/url/entity"
+	"github.com/griggsjared/getsit/internal/url/repository"
 )
 
 func TestService_SaveUrl(t *testing.T) {
 
 	ctx := context.Background()
 	r := repository.NewMemUrlEntryRepository()
-	s := service.New(r)
+	s := url.NewService(r)
 
 	//save an existing url
-	_, err := s.SaveUrl(ctx, &service.SaveUrlInput{
+	_, err := s.SaveUrl(ctx, &url.SaveUrlInput{
 		Url: "https://exists.com",
 	})
 	if err != nil {
@@ -51,7 +51,7 @@ func TestService_SaveUrl(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := s.SaveUrl(ctx, &service.SaveUrlInput{
+			_, err := s.SaveUrl(ctx, &url.SaveUrlInput{
 				Url: tt.url,
 			})
 			if (err != nil) != tt.wantErr {
@@ -67,9 +67,9 @@ func TestService_GetUrlByToken(t *testing.T) {
 
 	ctx := context.Background()
 	r := repository.NewMemUrlEntryRepository()
-	s := service.New(r)
+	s := url.NewService(r)
 
-	entry, err := s.SaveUrl(ctx, &service.SaveUrlInput{
+	entry, err := s.SaveUrl(ctx, &url.SaveUrlInput{
 		Url: "https://example.com",
 	})
 	if err != nil {
@@ -104,7 +104,7 @@ func TestService_GetUrlByToken(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := s.GetUrlByToken(ctx, &service.GetUrlByTokenInput{
+			_, err := s.GetUrlByToken(ctx, &url.GetUrlByTokenInput{
 				Token: tt.token,
 			})
 			if (err != nil) != tt.wantErr {
@@ -120,9 +120,9 @@ func TestService_GetUrlByUrl(t *testing.T) {
 
 	ctx := context.Background()
 	r := repository.NewMemUrlEntryRepository()
-	s := service.New(r)
+	s := url.NewService(r)
 
-	entry, err := s.SaveUrl(ctx, &service.SaveUrlInput{
+	entry, err := s.SaveUrl(ctx, &url.SaveUrlInput{
 		Url: "https://example.com",
 	})
 	if err != nil {
@@ -157,7 +157,7 @@ func TestService_GetUrlByUrl(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := s.GetUrlByUrl(ctx, &service.GetUrlByUrlInput{
+			_, err := s.GetUrlByUrl(ctx, &url.GetUrlByUrlInput{
 				Url: tt.url,
 			})
 			if (err != nil) != tt.wantErr {
@@ -172,9 +172,9 @@ func TestService_VisitUrlByToken(t *testing.T) {
 
 	ctx := context.Background()
 	r := repository.NewMemUrlEntryRepository()
-	s := service.New(r)
+	s := url.NewService(r)
 
-	entry, err := s.SaveUrl(ctx, &service.SaveUrlInput{
+	entry, err := s.SaveUrl(ctx, &url.SaveUrlInput{
 		Url: "https://example.com",
 	})
 	if err != nil {
@@ -209,7 +209,7 @@ func TestService_VisitUrlByToken(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := s.VisitUrlByToken(ctx, &service.VisitUrlByTokenInput{
+			err := s.VisitUrlByToken(ctx, &url.VisitUrlByTokenInput{
 				Token: tt.token,
 			})
 			if (err != nil) != tt.wantErr {

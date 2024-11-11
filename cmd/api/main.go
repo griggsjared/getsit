@@ -7,15 +7,15 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/griggsjared/getsit/internal/repository"
-	"github.com/griggsjared/getsit/internal/service"
+	"github.com/griggsjared/getsit/internal/url"
+	"github.com/griggsjared/getsit/internal/url/repository"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 )
 
 type app struct {
-	service *service.Service
-	logger  *log.Logger
+	urlService *url.Service
+	logger     *log.Logger
 }
 
 func main() {
@@ -49,8 +49,8 @@ func main() {
 	}
 
 	app := &app{
-		service: service.New(repository.NewPGXUrlEntryRepository(db)),
-		logger:  log.New(os.Stdout, "", log.LstdFlags),
+		urlService: url.NewService(repository.NewPGXUrlEntryRepository(db)),
+		logger:     log.New(os.Stdout, "", log.LstdFlags),
 	}
 
 	mux := http.NewServeMux()

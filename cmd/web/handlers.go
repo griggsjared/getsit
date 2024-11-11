@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/griggsjared/getsit/internal/service"
+	"github.com/griggsjared/getsit/internal/url"
 	"github.com/griggsjared/getsit/web/template"
 
 	"github.com/gorilla/csrf"
@@ -32,18 +32,18 @@ func (a *app) homepageHandler(w http.ResponseWriter, r *http.Request) {
 // if successful, we will redirect to /i/{token} to show the information about the url entry
 func (a *app) createHandler(w http.ResponseWriter, r *http.Request) {
 
-	if exists, _ := a.service.GetUrlByUrl(r.Context(), &service.GetUrlByUrlInput{
+	if exists, _ := a.urlService.GetUrlByUrl(r.Context(), &url.GetUrlByUrlInput{
 		Url: r.FormValue("url"),
 	}); exists != nil {
 		http.Redirect(w, r, fmt.Sprintf("/i/%s", exists.Token), http.StatusMovedPermanently)
 		return
 	}
 
-	input := &service.SaveUrlInput{
+	input := &url.SaveUrlInput{
 		Url: r.FormValue("url"),
 	}
 
-	entry, err := a.service.SaveUrl(r.Context(), input)
+	entry, err := a.urlService.SaveUrl(r.Context(), input)
 	if err != nil {
 		if len(input.ValidationErrors) > 0 {
 			a.setFlashErrors(w, r, input.ValidationErrors)
@@ -63,7 +63,7 @@ func (a *app) createHandler(w http.ResponseWriter, r *http.Request) {
 // if successful, we record the visit and redirect to the long url
 func (a *app) redirectHandler(w http.ResponseWriter, r *http.Request) {
 
-	entry, err := a.service.GetUrlByToken(r.Context(), &service.GetUrlByTokenInput{
+	entry, err := a.urlService.GetUrlByToken(r.Context(), &url.GetUrlByTokenInput{
 		Token: r.PathValue("token"),
 	})
 	if err != nil {
@@ -71,7 +71,7 @@ func (a *app) redirectHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = a.service.VisitUrlByToken(r.Context(), &service.VisitUrlByTokenInput{
+	err = a.urlService.VisitUrlByToken(r.Context(), &url.VisitUrlByTokenInput{
 		Token: entry.Token.String(),
 	})
 	if err != nil {
@@ -87,7 +87,7 @@ func (a *app) redirectHandler(w http.ResponseWriter, r *http.Request) {
 // if successful, we will show the url, token, and the number of times the url has been visited
 func (a *app) infoHandler(w http.ResponseWriter, r *http.Request) {
 
-	entry, err := a.service.GetUrlByToken(r.Context(), &service.GetUrlByTokenInput{
+	entry, err := a.urlService.GetUrlByToken(r.Context(), &url.GetUrlByTokenInput{
 		Token: r.PathValue("token"),
 	})
 	if err != nil {

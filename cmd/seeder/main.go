@@ -13,8 +13,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 
-	"github.com/griggsjared/getsit/internal/repository"
-	"github.com/griggsjared/getsit/internal/service"
+	"github.com/griggsjared/getsit/internal/url"
+	"github.com/griggsjared/getsit/internal/url/repository"
 )
 
 func main() {
@@ -47,7 +47,7 @@ func main() {
 
 	r := repository.NewPGXUrlEntryRepository(db)
 
-	service := service.New(r)
+	service := url.NewService(r)
 
 	if fresh {
 		db.Exec(ctx, "TRUNCATE url_entries")
@@ -58,7 +58,7 @@ func main() {
 }
 
 // seed will generate a number of tokens and check for duplicates
-func SeedUrlEntries(ctx context.Context, tCount int, wCount int, s *service.Service) {
+func SeedUrlEntries(ctx context.Context, tCount int, wCount int, s *url.Service) {
 
 	genCount := 0
 
@@ -115,7 +115,7 @@ func SeedUrlEntries(ctx context.Context, tCount int, wCount int, s *service.Serv
 					break
 				}
 
-				s.SaveUrl(ctx, &service.SaveUrlInput{
+				s.SaveUrl(ctx, &url.SaveUrlInput{
 					Url: "https://example.com/" + fmt.Sprintf("%d", rand),
 				})
 

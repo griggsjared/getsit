@@ -12,15 +12,15 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 
-	"github.com/griggsjared/getsit/internal/repository"
-	"github.com/griggsjared/getsit/internal/service"
+	"github.com/griggsjared/getsit/internal/url"
+	"github.com/griggsjared/getsit/internal/url/repository"
 	"github.com/griggsjared/getsit/web"
 )
 
 type app struct {
-	service *service.Service
-	logger  *log.Logger
-	session *sessions.CookieStore
+	urlService *url.Service
+	logger     *log.Logger
+	session    *sessions.CookieStore
 }
 
 func main() {
@@ -54,9 +54,9 @@ func main() {
 	}
 
 	app := &app{
-		service: service.New(repository.NewPGXUrlEntryRepository(db)),
-		logger:  log.New(os.Stdout, "", log.LstdFlags),
-		session: sessions.NewCookieStore([]byte(sessionSecret)),
+		urlService: url.NewService(repository.NewPGXUrlEntryRepository(db)),
+		logger:     log.New(os.Stdout, "", log.LstdFlags),
+		session:    sessions.NewCookieStore([]byte(sessionSecret)),
 	}
 
 	csrfMiddleware := csrf.Protect(

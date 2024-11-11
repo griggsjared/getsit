@@ -3,7 +3,7 @@ package entity_test
 import (
 	"testing"
 
-	"github.com/griggsjared/getsit/internal/entity"
+	"github.com/griggsjared/getsit/internal/url/entity"
 )
 
 func TestUrlToken_NewUrlToken(t *testing.T) {

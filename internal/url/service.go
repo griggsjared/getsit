@@ -1,10 +1,10 @@
-package service
+package url
 
 import (
 	"context"
 	"errors"
 
-	"github.com/griggsjared/getsit/internal/entity"
+	"github.com/griggsjared/getsit/internal/url/entity"
 )
 
 // ErrValidation is a generic validation error that can be returned when input validation fails
@@ -32,7 +32,7 @@ type Service struct {
 }
 
 // New will create a new service
-func New(repo UrlEntryRepository) *Service {
+func NewService(repo UrlEntryRepository) *Service {
 	return &Service{
 		repo: repo,
 	}

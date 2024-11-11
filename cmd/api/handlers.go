@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/griggsjared/getsit/internal/service"
+	"github.com/griggsjared/getsit/internal/url"
 )
 
 // urlEntryResponse is the response struct for the url entry
@@ -17,7 +17,7 @@ type urlEntryResponse struct {
 // createUrlEntryHandler is the handler to create a new url entry
 func (a *app) createUrlEntryHandler(w http.ResponseWriter, r *http.Request) {
 
-	if exists, _ := a.service.GetUrlByUrl(r.Context(), &service.GetUrlByUrlInput{
+	if exists, _ := a.urlService.GetUrlByUrl(r.Context(), &url.GetUrlByUrlInput{
 		Url: r.FormValue("url"),
 	}); exists != nil {
 		w.Header().Set("Content-Type", "application/json")
@@ -28,11 +28,11 @@ func (a *app) createUrlEntryHandler(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 
-	input := &service.SaveUrlInput{
+	input := &url.SaveUrlInput{
 		Url: r.FormValue("url"),
 	}
 
-	entry, err := a.service.SaveUrl(r.Context(), input)
+	entry, err := a.urlService.SaveUrl(r.Context(), input)
 	if err != nil {
 		a.errorHandler(w, r, http.StatusBadRequest, "Failed to save url")
 		return
@@ -49,7 +49,7 @@ func (a *app) createUrlEntryHandler(w http.ResponseWriter, r *http.Request) {
 // getUrlEntryHandler is the handler to get a single url entry by token
 func (a *app) getUrlEntryHandler(w http.ResponseWriter, r *http.Request) {
 
-	entry, err := a.service.GetUrlByToken(r.Context(), &service.GetUrlByTokenInput{
+	entry, err := a.urlService.GetUrlByToken(r.Context(), &url.GetUrlByTokenInput{
 		Token: r.PathValue("token"),
 	})
 	if err != nil {
