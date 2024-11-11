@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/griggsjared/getsit/internal/qrcode"
 	"github.com/griggsjared/getsit/internal/url"
 	"github.com/griggsjared/getsit/web/template"
 
@@ -100,12 +101,22 @@ func (a *app) infoHandler(w http.ResponseWriter, r *http.Request) {
 		proto = "https"
 	}
 
+	qr, err := a.qrcodeService.Generate(&qrcode.GenerateInput{
+		Content: fmt.Sprintf("%s://%s/%s", proto, r.Host, entry.Token),
+		Size:    256,
+	})
+	if err != nil {
+		http.Error(w, "Failed to generate QR code", http.StatusInternalServerError)
+		return
+	}
+
 	err = template.Info(template.InfoViewModel{
 		ShortUrl:          fmt.Sprintf("%s/%s", r.Host, entry.Token),
 		ShortUrlWithProto: fmt.Sprintf("%s://%s/%s", proto, r.Host, entry.Token),
 		Url:               entry.Url.String(),
 		Token:             entry.Token.String(),
 		VisitCount:        entry.VisitCount,
+		QRCode:            qr.Base64(),
 	}).Render(r.Context(), w)
 	if err != nil {
 		http.Error(w, "Failed to render information page", http.StatusInternalServerError)
