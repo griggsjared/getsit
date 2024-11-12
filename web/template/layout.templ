@@ -28,7 +28,7 @@ templ layout(title string) {
 			<meta name="description" content="it.getsit - it makes your URLs... shorter"/>
 			<link rel="preconnect" href="https://fonts.googleapis.com"/>
 			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-			<link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet"/>
+			<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&display=swap" rel="stylesheet"/>
 			<link rel="stylesheet" href={ "/assets/main.css?" + assetVersion }/>
 			<link rel="icon" type="image/png" sizes="32x32" href={ "/assets/favicon.png?" + assetVersion }/>
 			<script>let FF_FOUC_FIX;</script>
@@ -67,7 +67,7 @@ templ footer() {
 				</a>
 				<span class="font-bold">&copy; 2024</span>
 			</div>
-			<button type="button" id="color-mode" class="hover:text-green font-bold">
+			<button type="button" id="color-mode" class="hover:text-green font-bold" title="Switch Color Mode">
 				<div class="gap-2 items-center hidden dark:flex">
 					<span class="hidden sm:inline">Light Mode</span>
 					@icon("sun", "w-4 h-4")
