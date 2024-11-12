@@ -19,10 +19,22 @@
 
         --color-background: var(--color-gray-light);
         --color-foreground: var(--color-gray-dark);
+
+        --bg-dots: url("data:image/svg+xml;charset=utf-8,%3Csvg width='30' height='30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.227 0c.687 0 1.227.54 1.227 1.227s-.54 1.227-1.227 1.227S0 1.914 0 1.227.54 0 1.227 0z' fill='rgba(0,0,0,.15)'/%3E%3C/svg%3E");
     }
 
     .dark {
         --color-background: var(--color-gray);
         --color-foreground: var(--color-gray-light);
+
+        --bg-dots: url("data:image/svg+xml;charset=utf-8,%3Csvg width='30' height='30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.227 0c.687 0 1.227.54 1.227 1.227s-.54 1.227-1.227 1.227S0 1.914 0 1.227.54 0 1.227 0z' fill='rgba(255,255,255,.05)'/%3E%3C/svg%3E");
+    }
+}
+
+@layer components {
+    .bg-dots {
+        background-image: var(--bg-dots);
+        background-size: 40px 40px;
+        background-position: center center;
     }
 }

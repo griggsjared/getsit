@@ -33,7 +33,7 @@ templ layout(title string) {
 			<link rel="icon" type="image/png" sizes="32x32" href={ "/assets/favicon.png?" + assetVersion }/>
 			<script>let FF_FOUC_FIX;</script>
 		</head>
-		<body class={ "h-full w-full antialiased text-foreground bg-background", colorMode(ctx) }>
+		<body class={ "h-full w-full antialiased text-foreground bg-background bg-dots", colorMode(ctx) }>
 			<div class="h-full pt-4   flex flex-col">
 				@header(headerConfig{logoSize: logoSizeNormal})
 				<div class="max-w-2xl mx-auto flex-grow py-8 sm:py-12 w-full px-4">
