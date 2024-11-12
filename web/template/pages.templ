@@ -81,7 +81,7 @@ templ Info(vm InfoViewModel) {
 						{ strconv.Itoa(vm.VisitCount) } Visit
 					}
 				</div>
-				<img src={ vm.QRCode } class="border border-4 border-green" alt={ "QR Code for " + vm.ShortUrl }/>
+				<img src={ vm.QRCode } class="border border-4 border-green" alt={ "QR Code for " + vm.ShortUrl } width="264" height="264"/>
 			</div>
 			<div>
 				@button(buttonConfig{text: "Get It Again", className: "w-full", href: "/"})
