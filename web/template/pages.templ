@@ -49,9 +49,29 @@ type InfoViewModel struct {
 templ Info(vm InfoViewModel) {
 	@layout(vm.Token) {
 		<div class="space-y-4">
-			<div class="py-2 px-4 rounded bg-gray-dark/15 dark:bg-gray-light/10 text-2xl font-bold">
-				<a href={ templ.SafeURL(vm.ShortUrlWithProto) }>{ vm.ShortUrl }</a>
+			<div class="py-2 px-4 rounded bg-gray-dark/15 dark:bg-gray-light/10 text-2xl font-bold flex gap-2 justify-between items-center">
+				<div class="flex-grow whitespace-nowrap overflow-hidden text-ellipsis">
+					<a href={ templ.SafeURL(vm.ShortUrlWithProto) }>{ vm.ShortUrl }</a>
+				</div>
+				<button type="button" class="hover:text-green flex-grow-0 relative block" data-short-url={ vm.ShortUrlWithProto } id="copy-short-url">
+					<span class="sr-only">Copy</span>
+					@icon("copy", "w-6 h-6")
+					<div class="absolute left-0 right-0 top-full text-xs text-green flex justify-center items-center pt-3 hidden" id="copied-message">
+						<span>Copied!</span>
+					</div>
+				</button>
 			</div>
+			<script>
+				document.getElementById("copy-short-url").addEventListener("click", () => {
+					const shortUrl = document.getElementById("copy-short-url").getAttribute("data-short-url");
+					navigator.clipboard.writeText(shortUrl).then(() => {
+						document.getElementById("copied-message").classList.remove("hidden");
+						setTimeout(() => {
+							document.getElementById("copied-message").classList.add("hidden");
+						}, 2000);
+					});
+				});
+			</script>
 			<div class="space-y-1.5">
 				<div>{ vm.Url }</div>
 				<div>
