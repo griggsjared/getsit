@@ -28,7 +28,15 @@ templ layout(title string) {
 			<meta name="description" content="it.getsit - it makes your URLs... shorter"/>
 			<link rel="preconnect" href="https://fonts.googleapis.com"/>
 			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-			<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&display=swap" rel="stylesheet"/>
+			<link
+				rel="preload"
+				href="https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&display=swap"
+				as="style"
+				onload="this.onload=null;this.rel='stylesheet'"
+			/>
+			<noscript>
+				<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300..900&display=swap" rel="stylesheet"/>
+			</noscript>
 			<link rel="stylesheet" href={ "/assets/main.css?" + assetVersion }/>
 			<link rel="icon" type="image/png" sizes="32x32" href={ "/assets/favicon.png?" + assetVersion }/>
 			<script>let FF_FOUC_FIX;</script>
