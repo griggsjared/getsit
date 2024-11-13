@@ -159,13 +159,14 @@ func (a *app) healthzHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("ok"))
 }
 
+// getRequestProto will return the protocol a request.
 func getRequestProto(r *http.Request) string {
 	proto := "http"
 	if r.TLS != nil {
 		proto = "https"
 	}
-	if forwardedProto := r.Header.Get("X-Forwarded-Proto"); forwardedProto != "" {
-		proto = forwardedProto
+	if forwardedProto := r.Header.Get("X-Forwarded-Proto"); forwardedProto == "https" {
+		proto = "https"
 	}
 	return proto
 }

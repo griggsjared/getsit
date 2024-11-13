@@ -81,7 +81,7 @@ templ Info(vm InfoViewModel) {
 						{ strconv.Itoa(vm.VisitCount) } Visit
 					}
 				</div>
-				<div class="border border-4 -m-4 border-green">
+				<div class="border border-4 border-green aspect-1 inline-flex">
 					<img src={ vm.QRCode } class=" max-w-64 w-full" alt={ "QR Code for " + vm.ShortUrl } width="256" height="256"/>
 				</div>
 			</div>
