@@ -96,11 +96,7 @@ func (a *app) infoHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	proto := "http"
-	if r.TLS != nil {
-		proto = "https"
-	}
-
+	proto := getRequestProto(r)
 	a.logger.Println("using proto", proto)
 
 	qr, err := a.qrcodeService.Generate(&qrcode.GenerateInput{
@@ -161,4 +157,15 @@ func (a *app) tokenMismatchHandler(w http.ResponseWriter, r *http.Request) {
 func (a *app) healthzHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("ok"))
+}
+
+func getRequestProto(r *http.Request) string {
+	proto := "http"
+	if r.TLS != nil {
+		proto = "https"
+	}
+	if forwardedProto := r.Header.Get("X-Forwarded-Proto"); forwardedProto != "" {
+		proto = forwardedProto
+	}
+	return proto
 }
