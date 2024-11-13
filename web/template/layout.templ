@@ -44,9 +44,9 @@ templ layout(title string) {
 		<body class={ "h-full w-full antialiased text-foreground bg-background bg-dots", colorMode(ctx) }>
 			<div class="h-full pt-4   flex flex-col">
 				@header(headerConfig{logoSize: logoSizeNormal})
-				<div class="max-w-2xl mx-auto flex-grow py-8 sm:py-12 w-full px-4">
+				<main class="max-w-2xl mx-auto flex-grow py-8 sm:py-12 w-full px-4">
 					{ children... }
-				</div>
+				</main>
 				@footer()
 			</div>
 		</body>
