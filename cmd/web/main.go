@@ -58,7 +58,7 @@ func main() {
 	app := &app{
 		urlService:    url.NewService(repository.NewPGXUrlEntryRepository(db)),
 		qrcodeService: qrcode.NewService(),
-		logger:        slog.Default(),
+		logger:        slog.Default().With(slog.String("service", "getsit-web")),
 		session:       sessions.NewCookieStore([]byte(sessionSecret)),
 	}
 

@@ -28,9 +28,9 @@ func main() {
 	if dbUrl == "" {
 		fmt.Println("DATABASE_URL is not set")
 		os.Exit(1)
-  }
+	}
 
-  db, err := pgxpool.New(ctx, dbUrl)
+	db, err := pgxpool.New(ctx, dbUrl)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -50,7 +50,7 @@ func main() {
 
 	app := &app{
 		urlService: url.NewService(repository.NewPGXUrlEntryRepository(db)),
-		logger:     slog.Default().With(slog.String("service", "getsit")),
+		logger:     slog.Default().With(slog.String("service", "getsit-api")),
 	}
 
 	mux := http.NewServeMux()
