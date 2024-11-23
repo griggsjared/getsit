@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
 	"os"
 
@@ -15,7 +15,7 @@ import (
 
 type app struct {
 	urlService *url.Service
-	logger     *log.Logger
+	logger     *slog.Logger
 }
 
 func main() {
@@ -28,9 +28,9 @@ func main() {
 	if dbUrl == "" {
 		fmt.Println("DATABASE_URL is not set")
 		os.Exit(1)
-	}
+  }
 
-	db, err := pgxpool.New(ctx, dbUrl)
+  db, err := pgxpool.New(ctx, dbUrl)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -50,7 +50,7 @@ func main() {
 
 	app := &app{
 		urlService: url.NewService(repository.NewPGXUrlEntryRepository(db)),
-		logger:     log.New(os.Stdout, "", log.LstdFlags),
+		logger:     slog.Default().With(slog.String("service", "getsit")),
 	}
 
 	mux := http.NewServeMux()
@@ -60,6 +60,5 @@ func main() {
 	mux.HandleFunc("GET /healthz", app.healthzHandler)
 
 	fmt.Printf("Starting server on %s\n", serverAddr)
-
 	http.ListenAndServe(serverAddr, app.middlewareStack(mux, app.loggerMiddleware))
 }

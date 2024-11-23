@@ -97,7 +97,6 @@ func (a *app) infoHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	proto := getRequestProto(r)
-	a.logger.Println("using proto", proto)
 
 	qr, err := a.qrcodeService.Generate(&qrcode.GenerateInput{
 		Content: fmt.Sprintf("%s://%s/%s", proto, r.Host, entry.Token),

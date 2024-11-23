@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -30,11 +31,7 @@ func (a *app) loggerMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 		next.ServeHTTP(w, r)
-		a.logger.Println(
-			"method", r.Method,
-			"path", r.URL.Path,
-			"duration", time.Since(start),
-		)
+		a.logger.Info("request", slog.String("ip", r.RemoteAddr), slog.String("path", r.URL.Path), slog.String("method", r.Method), slog.Duration("duration", time.Since(start)))
 	})
 }
 

@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
 	"os"
 
@@ -21,7 +21,7 @@ import (
 type app struct {
 	urlService    *url.Service
 	qrcodeService *qrcode.Service
-	logger        *log.Logger
+	logger        *slog.Logger
 	session       *sessions.CookieStore
 }
 
@@ -58,7 +58,7 @@ func main() {
 	app := &app{
 		urlService:    url.NewService(repository.NewPGXUrlEntryRepository(db)),
 		qrcodeService: qrcode.NewService(),
-		logger:        log.New(os.Stdout, "", log.LstdFlags),
+		logger:        slog.Default(),
 		session:       sessions.NewCookieStore([]byte(sessionSecret)),
 	}
 
