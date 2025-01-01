@@ -56,7 +56,7 @@ templ Info(vm InfoViewModel) {
 				<button type="button" class="hover:text-green flex-grow-0 relative block" data-short-url={ vm.ShortUrlWithProto } id="copy-short-url">
 					<span class="sr-only">Copy</span>
 					@icon("copy", "w-6 h-6")
-					<div class="absolute left-0 right-0 top-full text-xs text-green flex justify-center items-center pt-3 hidden" id="copied-message">
+					<div class="absolute left-0 right-0 top-full text-xs text-green justify-center items-center pt-3 hidden" id="copied-message">
 						<span>Copied!</span>
 					</div>
 				</button>
@@ -81,7 +81,7 @@ templ Info(vm InfoViewModel) {
 						{ strconv.Itoa(vm.VisitCount) } Visit
 					}
 				</div>
-				<div class="border border-4 border-green aspect-1 inline-flex">
+				<div class="border-4 border-green aspect-1 inline-flex">
 					<img src={ vm.QRCode } class=" max-w-64 w-full" alt={ "QR Code for " + vm.ShortUrl } width="256" height="256"/>
 				</div>
 			</div>

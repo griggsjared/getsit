@@ -98,7 +98,7 @@ templ footer() {
 templ message(message string) {
 	<div id="message">
 		if message != "" {
-			<div class="py-1 px-2 border-l border-error border-l-4 font-bold first-letter:uppercase bg-gray-dark/15 dark:bg-gray-light/10">{ message }</div>
+			<div class="py-1 px-2 border-error border-l-4 font-bold first-letter:uppercase bg-gray-dark/15 dark:bg-gray-light/10">{ message }</div>
 		}
 	</div>
 }
@@ -106,7 +106,7 @@ templ message(message string) {
 templ errors(errors map[string]string) {
 	<div id="errors">
 		if len(errors) > 0 {
-			<ul class="py-1 px-2 border-l border-error border-l-4 font-bold bg-gray-dark/15 dark:bg-gray-light/10 rounded">
+			<ul class="py-1 px-2 border-error border-l-4 font-bold bg-gray-dark/15 dark:bg-gray-light/10 rounded">
 				for _ , value := range errors {
 					<li class="first-letter:uppercase">{ value }</li>
 				}
