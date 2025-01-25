@@ -1,40 +1,41 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-@layer base {
-    :root, .light {
-        --color-white: /* #ffffff */ 255 255 255;
-        --color-black: /* #000000 */ 0 0 0;
+@plugin '@tailwindcss/forms';
 
-        --color-gray: /* ##333333 */ 51 51 51;
-        --color-gray-light: /* #f4f4f4 */ 244 244 244;
-        --color-gray-dark: /* #1a1a1a */ 26 26 26;
+@custom-variant dark (&:where(.dark, .dark *));
 
-        --color-red: /* #d0454c */ 208 69 76;
-        --color-green:  /* #7e9142 */ 126 145 66;
+@theme {
+  --font-sans: "Figtree", sans-serif;
 
-        --color-success : var(--color-green);
-        --color-error : var(--color-red);
+  --color-white: #ffffff; 
+  --color-black: #000000;
 
-        --color-background: var(--color-gray-light);
-        --color-foreground: var(--color-gray-dark);
+  --color-gray: #333333;
+  --color-gray-light: #f4f4f4;
+  --color-gray-dark: #1a1a1a;
 
-        --bg-dots: url("data:image/svg+xml;charset=utf-8,%3Csvg width='30' height='30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.227 0c.687 0 1.227.54 1.227 1.227s-.54 1.227-1.227 1.227S0 1.914 0 1.227.54 0 1.227 0z' fill='rgba(0,0,0,.15)'/%3E%3C/svg%3E");
-    }
+  --color-red: #d0454c;
+  --color-green: #7e9142;
 
-    .dark {
-        --color-background: var(--color-gray);
-        --color-foreground: var(--color-gray-light);
+  --color-success : var(--color-green);
+  --color-error : var(--color-red);
 
-        --bg-dots: url("data:image/svg+xml;charset=utf-8,%3Csvg width='30' height='30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.227 0c.687 0 1.227.54 1.227 1.227s-.54 1.227-1.227 1.227S0 1.914 0 1.227.54 0 1.227 0z' fill='rgba(255,255,255,.05)'/%3E%3C/svg%3E");
-    }
+  --color-background: var(--color-gray-light);
+  --color-foreground: var(--color-gray-dark);
+
+  --bg-dots: url("data:image/svg+xml;charset=utf-8,%3Csvg width='30' height='30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.227 0c.687 0 1.227.54 1.227 1.227s-.54 1.227-1.227 1.227S0 1.914 0 1.227.54 0 1.227 0z' fill='rgba(0,0,0,.15)'/%3E%3C/svg%3E");
 }
 
-@layer components {
-    .bg-dots {
-        background-image: var(--bg-dots);
-        background-size: 40px 40px;
-        background-position: center center;
-    }
+@layer base {
+  .dark {
+    --color-background: var(--color-gray);
+    --color-foreground: var(--color-gray-light);
+    --bg-dots: url("data:image/svg+xml;charset=utf-8,%3Csvg width='30' height='30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.227 0c.687 0 1.227.54 1.227 1.227s-.54 1.227-1.227 1.227S0 1.914 0 1.227.54 0 1.227 0z' fill='rgba(255,255,255,.05)'/%3E%3C/svg%3E");
+  }
+}
+
+@utility bg-dots {
+  background-image: var(--bg-dots);
+  background-size: 40px 40px;
+  background-position: center center;
 }
