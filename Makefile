@@ -29,7 +29,7 @@ dev-web/templ:
 
 # run tailwindcss to generate the main.css bundle in watch mode.
 dev-web/tailwind:
-	npx tailwindcss -i ./web/main.css -o ./web/public/main.css -c ./web/tailwind.config.js \
+	npx @tailwindcss/cli -i ./web/main.css -o ./web/public/main.css \
 	--watch \
 	--minify
 
@@ -100,8 +100,8 @@ test:
 
 # build the web docker container image.
 docker/web/build:
-	docker build -f docker/web/Dockerfile -q .
+	docker build --platform linux/amd64 -f docker/web/Dockerfile -q .
 
 # run the web docker container image.
 docker/web/run:
-	docker run -it -p ${PORT}:${PORT} --env-file=.env  --rm $(shell docker build -f docker/web/Dockerfile -q .)
+	docker run -it -p ${PORT}:${PORT} --env-file=.env  --rm $(shell docker build --platform linux/amd64ear:-f docker/web/Dockerfile -q .)
