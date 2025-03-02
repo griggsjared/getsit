@@ -1,8 +1,9 @@
 package entity
 
 import (
+	"crypto/rand"
 	"fmt"
-	"math/rand"
+	"math/big"
 	"net/url"
 	"regexp"
 )
@@ -17,13 +18,18 @@ const (
 type UrlToken string
 
 // NewUrlToken will generate a new url token that is 8 characters long.
-func NewUrlToken() UrlToken {
+func NewUrlToken() (UrlToken, error) {
 	var token UrlToken
+	tokenBytesLen := big.NewInt(int64(len(tokenBytes)))
 	for i := 0; i < int(tokenLength); i++ {
-		b := tokenBytes[rand.Intn(len(tokenBytes)-1)]
-		token += UrlToken(b)
+		randomIdx, err := rand.Int(rand.Reader, tokenBytesLen)
+		if err != nil {
+			return "", err
+		}
+		token += UrlToken(tokenBytes[randomIdx.Int64()])
 	}
-	return token
+
+	return token, nil
 }
 
 // Validate will check if the token is valid

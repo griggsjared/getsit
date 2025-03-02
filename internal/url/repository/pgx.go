@@ -36,7 +36,10 @@ func (s *PGXUrlEntryRepository) SaveUrl(ctx context.Context, url entity.Url) (*e
 	//find a unique token
 	var token entity.UrlToken
 	for {
-		token = entity.NewUrlToken()
+		token, err = entity.NewUrlToken()
+    if err != nil {
+      return nil, err
+    }
 		_, err := s.GetFromToken(ctx, token)
 		if err != nil {
 			break

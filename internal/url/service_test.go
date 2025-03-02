@@ -76,6 +76,11 @@ func TestService_GetUrlByToken(t *testing.T) {
 		t.Errorf("SaveUrl() error = %v", err)
 	}
 
+  token, err := entity.NewUrlToken()
+  if err != nil {
+    t.Errorf("NewUrlToken() error = %v", err)
+  }
+
 	tests := []struct {
 		name    string
 		token   string
@@ -88,7 +93,7 @@ func TestService_GetUrlByToken(t *testing.T) {
 		},
 		{
 			name:    "valid token but not found",
-			token:   entity.NewUrlToken().String(),
+			token:   token.String(),
 			wantErr: true,
 		},
 		{
@@ -181,6 +186,11 @@ func TestService_VisitUrlByToken(t *testing.T) {
 		t.Errorf("SaveUrl() error = %v", err)
 	}
 
+  token, err := entity.NewUrlToken()
+  if err != nil {
+    t.Errorf("NewUrlToken() error = %v", err)
+  }
+
 	tests := []struct {
 		name    string
 		token   string
@@ -193,7 +203,7 @@ func TestService_VisitUrlByToken(t *testing.T) {
 		},
 		{
 			name:    "valid token but not found",
-			token:   entity.NewUrlToken().String(),
+			token:   token.String(),
 			wantErr: true,
 		},
 		{

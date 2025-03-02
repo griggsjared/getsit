@@ -7,7 +7,10 @@ import (
 )
 
 func TestUrlToken_NewUrlToken(t *testing.T) {
-	token := entity.NewUrlToken()
+	token, err := entity.NewUrlToken()
+  if err != nil {
+    t.Errorf("NewUrlToken() = %v", err)
+  }
 	if err := token.Validate(); err != nil {
 		t.Errorf("NewUrlToken() = %v", err)
 	}
