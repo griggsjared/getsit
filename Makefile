@@ -104,4 +104,4 @@ docker/web/build:
 
 # run the web docker container image.
 docker/web/run:
-	docker run -it -p ${PORT}:${PORT} --env-file=.env  --rm $(shell docker build --platform linux/amd64ear:-f docker/web/Dockerfile -q .)
+	docker run -it -p ${PORT}:${PORT} --platform linux/amd64 --env-file=.env --rm $(shell docker build --platform linux/amd64 -f docker/web/Dockerfile -q .)
