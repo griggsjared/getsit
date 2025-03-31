@@ -31,7 +31,7 @@ func (a *app) loggerMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 		next.ServeHTTP(w, r)
-    ip := r.RemoteAddr
+		ip := r.RemoteAddr
 		if r.Header.Get("X-Forwarded-For") != "" {
 			ip = r.Header.Get("X-Forwarded-For")
 		}

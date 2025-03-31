@@ -37,9 +37,9 @@ func (s *PGXUrlEntryRepository) SaveUrl(ctx context.Context, url entity.Url) (*e
 	var token entity.UrlToken
 	for {
 		token, err = entity.NewUrlToken()
-    if err != nil {
-      return nil, err
-    }
+		if err != nil {
+			return nil, err
+		}
 		_, err := s.GetFromToken(ctx, token)
 		if err != nil {
 			break

@@ -38,12 +38,12 @@ func (s *MemUrlEntryRepository) SaveUrl(ctx context.Context, url entity.Url) (*e
 	}
 
 	var token entity.UrlToken
-  var err error
+	var err error
 	for {
-    token, err = entity.NewUrlToken()
-    if err != nil {
-      return nil, err
-    }
+		token, err = entity.NewUrlToken()
+		if err != nil {
+			return nil, err
+		}
 		if _, ok := s.entriesToken[token]; !ok {
 			break
 		}
