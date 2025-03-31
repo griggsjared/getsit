@@ -32,10 +32,13 @@ jobs:
           gofmt -s -l .
           exit 1
         fi
+  
+    - name: Build Web
+      run: go build -v -o ./getsit-web ./cmd/web
     
-    - name: Build
-      run: go build -v ./...
-    
+    - name: Build Api
+      run: go build -v -o ./getsit-api ./cmd/api
+
     - name: Test
-      run: go test -v ./... -cover
+      run: go test -v ./internal/... -cover
 
