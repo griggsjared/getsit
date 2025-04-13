@@ -23,7 +23,7 @@ jobs:
       run: go mod download 
 
     - name: Generate Templ
-      run: go install github.com/a-h/templ/cmd/templ@v0.3.819 && templ generate
+      run: go tool templ generate
 
     - name: Verify code formatting
       run: |
