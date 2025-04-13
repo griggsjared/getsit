@@ -35,7 +35,7 @@ func NewUrlToken() (UrlToken, error) {
 // Validate will check if the token is valid
 func (t UrlToken) Validate() error {
 	//use regex to check if the token is valid
-	mustCompile := regexp.MustCompile(`^[a-zA-Z0-9]{8}$`)
+	mustCompile := regexp.MustCompile(`^[a-zA-Z0-9_]{8}$`)
 	if !mustCompile.MatchString(t.String()) {
 		return fmt.Errorf("token is not valid")
 	}
