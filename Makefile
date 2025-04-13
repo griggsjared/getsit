@@ -36,7 +36,7 @@ dev-web/tailwind:
 # run air to detect any go file changes to re-build and re-run the server.
 dev-web/server:
 	go run github.com/cosmtrek/air@v1.51.0 \
-	--build.cmd "go build -o tmp/bin/web ./cmd/web/" \
+	--build.cmd "go build -o ./tmp/bin/web ./cmd/web/" \
 	--build.bin "tmp/bin/web" \
 	--build.delay "100" \
 	--build.include_ext "go,css" \
@@ -46,7 +46,7 @@ dev-web/server:
 # watch for any js or css change in the assets/ folder, then reload the browser via templ proxy.
 dev-web/sync_assets:
 	go run github.com/cosmtrek/air@v1.51.0 \
-	--build.cmd "templ generate --notify-proxy" \
+	--build.cmd "go tool templ generate --notify-proxy" \
 	--build.bin "true" \
 	--build.delay "100" \
 	--build.exclude_dir "" \

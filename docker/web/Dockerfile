@@ -12,9 +12,7 @@ RUN ./tailwindcss -i /app/web/main.css -o /app/web/public/main.css --minify
 
 RUN go mod download
 
-RUN go install github.com/a-h/templ/cmd/templ@v0.3.819
-
-RUN templ generate
+RUN go tool templ generate
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o ./getsit-web ./cmd/web
 
