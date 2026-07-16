@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/griggsjared/getsit/internal/url"
 	"github.com/griggsjared/getsit/internal/url/repository"
@@ -60,5 +61,19 @@ func main() {
 	mux.HandleFunc("GET /healthz", app.healthzHandler)
 
 	fmt.Printf("Starting server on %s\n", serverAddr)
-	http.ListenAndServe(serverAddr, app.middlewareStack(mux, app.loggerMiddleware))
+
+	server := &http.Server{
+		Addr:              serverAddr,
+		Handler:           app.middlewareStack(mux, app.loggerMiddleware),
+		ReadHeaderTimeout: 10 * time.Second,
+		ReadTimeout:       30 * time.Second,
+		WriteTimeout:      30 * time.Second,
+		IdleTimeout:       120 * time.Second,
+		MaxHeaderBytes:    1 << 20,
+	}
+
+	if err := server.ListenAndServe(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }

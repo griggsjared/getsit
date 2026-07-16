@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gorilla/sessions"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -83,5 +84,18 @@ func main() {
 
 	fmt.Println("Starting server on", serverAddr)
 
-	http.ListenAndServe(serverAddr, app.middlewareStack(mux, app.loggerMiddleware))
+	server := &http.Server{
+		Addr:              serverAddr,
+		Handler:           app.middlewareStack(mux, app.loggerMiddleware),
+		ReadHeaderTimeout: 10 * time.Second,
+		ReadTimeout:       30 * time.Second,
+		WriteTimeout:      30 * time.Second,
+		IdleTimeout:       120 * time.Second,
+		MaxHeaderBytes:    1 << 20,
+	}
+
+	if err := server.ListenAndServe(); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
