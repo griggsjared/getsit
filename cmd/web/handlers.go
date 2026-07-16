@@ -7,20 +7,15 @@ import (
 	"github.com/griggsjared/getsit/internal/qrcode"
 	"github.com/griggsjared/getsit/internal/url"
 	"github.com/griggsjared/getsit/web/template"
-
-	"github.com/gorilla/csrf"
 )
 
 // homepageHandler will show the homepage of the application that shows the form to create a new short url
 func (a *app) homepageHandler(w http.ResponseWriter, r *http.Request) {
 
-	token := csrf.Token(r)
-
 	err := template.Homepage(template.HomepageViewModel{
-		CsrfToken: token,
-		Message:   a.getFlashMessage(w, r),
-		Errors:    a.getFlashErrors(w, r),
-		Inputs:    a.getFlashInputs(w, r),
+		Message: a.getFlashMessage(w, r),
+		Errors:  a.getFlashErrors(w, r),
+		Inputs:  a.getFlashInputs(w, r),
 	}).Render(r.Context(), w)
 	if err != nil {
 		http.Error(w, "Failed to render homepage", http.StatusInternalServerError)
@@ -137,9 +132,9 @@ func (a *app) notFoundHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// tokenMismatchHandler will show a 403 error message
-// this is the handler for when a csrf token mismatch occurs
-func (a *app) tokenMismatchHandler(w http.ResponseWriter, r *http.Request) {
+// forbiddenHandler will show a 403 error message
+// this is the handler for when a request is denied by CSRF protection
+func (a *app) forbiddenHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusForbidden)
 	err := template.ServerError(template.ServerErrorViewModel{
 		Code: http.StatusNotFound,

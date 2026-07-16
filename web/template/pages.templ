@@ -10,10 +10,9 @@ func getFlashInput(inputs map[string]string, key string, def string) string {
 }
 
 type HomepageViewModel struct {
-	CsrfToken string
-	Message   string
-	Errors    map[string]string
-	Inputs    map[string]string
+	Message string
+	Errors  map[string]string
+	Inputs  map[string]string
 }
 
 templ Homepage(vm HomepageViewModel) {
@@ -23,7 +22,6 @@ templ Homepage(vm HomepageViewModel) {
 			@errors(vm.Errors)
 			<div class="p-2 rounded bg-gray-dark/15 dark:bg-gray-light/10">
 				<form action="/create" method="post" novalidate>
-					<input type="hidden" name="csrf_token" value={ vm.CsrfToken }/>
 					<div class="flex justify-start items-center gap-2">
 						<input type="url" name="url" value={ getFlashInput(vm.Inputs, "url", "") } class="w-full p-2 bg-gray-light border border-gray-light rounded text-gray focus:border-green focus:ring-green" placeholder="Enter URL"/>
 						@button(buttonConfig{text: "Get It", buttonType: "submit", className: "flex-shrink-0"})
